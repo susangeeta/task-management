@@ -1,6 +1,6 @@
 import { Login } from "../components";
 
-const Home = () => {
+const OnbaordPage = () => {
   return <Login />;
 };
-export default Home;
+export default OnbaordPage;

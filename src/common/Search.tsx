@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchIcon } from "../../assets/svgs";
+// import { searchIcon } from "../../assets/svgs";
 
 interface SearchPropsType extends HTMLInputElement {}
 
@@ -24,7 +24,7 @@ const Search = (props: SearchPropsType) => {
           : ""
       }`}
     >
-      <img src={searchIcon} alt="searchIcon" />
+      {/* <img src={searchIcon} alt="searchIcon" /> */}
 
       <input
         className={`w-full text-sm2 font-normal !outline-none ${props.className}`}

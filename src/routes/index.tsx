@@ -1,14 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Home, MyTasks } from "../pages";
+import { MyTasksPage, OnbaordPage } from "../pages";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <OnbaordPage />,
   },
   {
     path: "/my-tasks",
-    element: <MyTasks />,
+    element: <MyTasksPage />,
   },
 ]);
 

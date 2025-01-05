@@ -4,7 +4,7 @@ interface ModalType {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  className: HTMLStyleElement;
+  className: string;
 }
 
 const Modal = ({ children, isOpen, onClose, className }: ModalType) => {

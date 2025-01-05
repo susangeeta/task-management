@@ -56,6 +56,7 @@ const useDb = () => {
       const docData = {
         ...data,
         createdAt: new Date().toISOString(),
+        updateAt: new Date().toISOString(),
       };
 
       const docRef = await addDoc(collection(db, collectionName), docData);

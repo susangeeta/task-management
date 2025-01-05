@@ -1,14 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { defaultImage } from "../../assets/common";
 import { boardIcon, listIcon, logoutIcon, tasksIcon } from "../../assets/svg";
 import CreateTaskModal from "../../components/ListView.tsx/CreateTaskModal";
 import { useView } from "../../contexts/ViewContext";
 import useAuth from "../../hooks/useAuth";
+import useDb from "../../hooks/useDb";
 
 const Header = () => {
   const { activeView, setActiveView } = useView();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
+  const { logout } = useDb();
+  const navigate = useNavigate();
+
   return (
     <div className="flex gap-4 pt-[26px] flex-col">
       <div className="flex justify-between ">
@@ -62,12 +67,16 @@ const Header = () => {
           </button>
         </div>
 
-        <div className="flex">
-          <button className="bg-background-logout-color  gap-2 flex items-center rounded-xl px-2 h-[40px] w-[112px]  border border-text-primary/15">
-            <img src={logoutIcon} className="h-[15px] w-[15px]" />
-            <span className="text-base font-semibold">LogOut</span>
-          </button>
-        </div>
+        <button
+          onClick={async () => {
+            await logout();
+            navigate("/");
+          }}
+          className="bg-background-logout-color  gap-2 flex items-center rounded-xl px-2 h-[40px] w-[112px]  border border-text-primary/15"
+        >
+          <img src={logoutIcon} className="h-[15px] w-[15px]" />
+          <span className="text-base font-semibold">LogOut</span>
+        </button>
       </section>
 
       <div className="flex items-end justify-end">
