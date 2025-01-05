@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { circle, loginBackground, taskIcon } from "../assets/svg";
 import useDb from "../hooks/useDb";
 
 const Login = () => {
   const { signInWithGoogle } = useDb();
+  const navigate = useNavigate();
   return (
     <div className="flex items-center justify-center bg-background-primary h-screen overflow-hidden">
       <div className="grid grid-cols-12 w-full h-full">
@@ -20,7 +22,10 @@ const Login = () => {
             </p>
           </div>
           <button
-            onClick={signInWithGoogle}
+            onClick={async () => {
+              await signInWithGoogle();
+              navigate("/my-tasks");
+            }}
             className="bg-background-secondary h-[3.728rem] w-[22.733rem] text-lg font-bold rounded-2xl flex items-center justify-center gap-3 cursor-pointer"
           >
             <img src="/google.png" alt="Google Icon" className="h-6 w-6" />

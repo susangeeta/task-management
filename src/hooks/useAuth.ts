@@ -1,18 +1,30 @@
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { DocumentData } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth } from "../db/db.config";
+import useDb from "./useDb";
 
 const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<DocumentData>({});
   const [loading, setLoading] = useState(true);
+  const { findById } = useDb();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    (async () => {
+      setLoading(true);
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser?.uid) {
+          const response = await findById("users", currentUser.uid);
+          const data = response.data();
+          if (data) {
+            setUser(data);
+          }
+        }
+      });
       setLoading(false);
-    });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    })();
   }, []);
 
   return { user, loading };

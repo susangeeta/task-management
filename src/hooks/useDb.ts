@@ -4,7 +4,9 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { auth, db, provider } from "../db/db.config";
@@ -16,34 +18,64 @@ const useDb = () => {
       const { user } = result;
 
       if (user) {
-        const response = await create("users", {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          avatar: user.photoURL,
-        });
-        console.log(response);
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            avatar: user.photoURL,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          });
+        }
+
+        return user.uid;
       }
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
   const logout = async () => {
     try {
       await signOut(auth);
-    } catch (error) {
-      console.error("Error logging out:", error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
   const create = async (collectionName: string, data: object) => {
     try {
-      const docRef = await addDoc(collection(db, collectionName), data);
-      console.log(docRef);
+      const docData = {
+        ...data,
+        createdAt: new Date().toISOString(),
+      };
+
+      const docRef = await addDoc(collection(db, collectionName), docData);
       return docRef.id;
-    } catch (error) {
-      console.error("Error adding document:", error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
+    }
+  };
+
+  const findById = async (collectionName: string, uid: string) => {
+    try {
+      const userDocRef = doc(db, collectionName, uid);
+      const userDoc = await getDoc(userDocRef);
+      return userDoc;
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
@@ -54,8 +86,10 @@ const useDb = () => {
         id: doc.id,
         ...doc.data(),
       }));
-    } catch (error) {
-      console.error("Error getting documents:", error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
@@ -66,18 +100,42 @@ const useDb = () => {
   ) => {
     try {
       const docRef = doc(db, collectionName, docId);
-      await updateDoc(docRef, updatedData);
-    } catch (error) {
-      console.error("Error updating document:", error);
+
+      // Verify document exists before updating
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        throw new Error("Document not found");
+      }
+
+      await updateDoc(docRef, {
+        ...updatedData,
+        updatedAt: new Date().toISOString(),
+      });
+
+      return true;
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
   const findByIdAndDelete = async (collectionName: string, docId: string) => {
     try {
       const docRef = doc(db, collectionName, docId);
+
+      // Verify document exists before deleting
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        throw new Error("Document not found");
+      }
+
       await deleteDoc(docRef);
-    } catch (error) {
-      console.error("Error deleting document:", error);
+      return true;
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "something went wrong";
+      throw new Error(message);
     }
   };
 
@@ -86,6 +144,7 @@ const useDb = () => {
     logout,
     create,
     find,
+    findById,
     findByIdAndUpdate,
     findByIdAndDelete,
   };

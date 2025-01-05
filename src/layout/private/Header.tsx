@@ -19,12 +19,10 @@ const Header = () => {
 
         <div className="flex gap-2 items-center">
           <img
-            src={user?.photoURL || defaultImage}
+            src={user?.avatar || defaultImage}
             className="h-10 w-10 object-cover rounded-full"
           />
-          <h1 className="text-base font-bold text-text-dark">
-            {user?.displayName}
-          </h1>
+          <h1 className="text-base font-bold text-text-dark">{user?.name}</h1>
         </div>
       </div>
 
