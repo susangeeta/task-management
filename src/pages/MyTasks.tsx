@@ -1,12 +1,11 @@
 import ListViewHeadder from "../components/ListView.tsx/ListviewHeader";
-import { Header } from "../layout/private";
+import { PrivateLayout } from "../layout";
 
 const MyTasks = () => {
   return (
-    <div>
-      <Header />
+    <PrivateLayout>
       <ListViewHeadder />
-    </div>
+    </PrivateLayout>
   );
 };
 

@@ -1,24 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-// export default {
-//   content: [
-//     "./index.html",
-//     "./src/**/*.{js,tsx,jsx,ts}",
-//     "./src/pages/**/*.{js,ts,jsx,tsx}",
-//     "./src/components/**/*.{js,ts,jsx,tsx}",
-//   ],
-//   theme: {
-//     extend: {
-//       colors: {
-//         "bg-primary": "#fff9f9",
-
-//         // text colors
-//         "text-primary": "#96479c",
-//       },
-//     },
-//   },
-//   plugins: [],
-// };
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -35,12 +14,15 @@ export default {
           primary: "#fff9f9",
           secondary: "#292929",
           "logout-color": "#FFF9F9  ",
+          "todo-color": "#FAC3FF",
+          "todo-bg": "#F1F1F1",
         },
         // Text colors
         text: {
           primary: "#7B1984",
           secondary: "#000000",
           tertiary: "#231F20D1",
+          dark: "#666666",
         },
         // Border colors
         border: {
@@ -68,28 +50,8 @@ export default {
         lg: "0.5rem",
         xl: "0.75rem",
         "2xl": "1.182rem",
+        xxl: "60px",
         full: "9999px",
-      },
-      spacing: {
-        0: "0",
-        1: "0.25rem",
-        2: "0.5rem",
-        3: "0.75rem",
-        4: "1rem",
-        5: "1.25rem",
-        6: "1.5rem",
-        8: "2rem",
-        10: "2.5rem",
-        12: "3rem",
-        16: "4rem",
-      },
-      boxShadow: {
-        sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        default:
-          "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-        md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        none: "none",
       },
     },
   },

@@ -1,6 +1,8 @@
 import { circle, loginBackground, taskIcon } from "../assets/svg";
+import useDb from "../hooks/useDb";
 
 const Login = () => {
+  const { signInWithGoogle } = useDb();
   return (
     <div className="flex items-center justify-center bg-background-primary h-screen overflow-hidden">
       <div className="grid grid-cols-12 w-full h-full">
@@ -17,7 +19,10 @@ const Login = () => {
               with our all-in-one task management app.
             </p>
           </div>
-          <button className="bg-background-secondary h-[3.728rem] w-[22.733rem] text-lg font-bold rounded-2xl flex items-center justify-center gap-3 cursor-pointer">
+          <button
+            onClick={signInWithGoogle}
+            className="bg-background-secondary h-[3.728rem] w-[22.733rem] text-lg font-bold rounded-2xl flex items-center justify-center gap-3 cursor-pointer"
+          >
             <img src="/google.png" alt="Google Icon" className="h-6 w-6" />
             <span className="text-white">Continue With Google</span>
           </button>
