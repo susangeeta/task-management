@@ -1,7 +1,10 @@
 export { default as circle } from "./home/circle.svg";
 export { default as loginBackground } from "./home/login-background.svg";
 export { default as taskIcon } from "./home/task-icon.svg";
+export { default as addIcon } from "./my-task/add-icon.svg";
 export { default as boardIcon } from "./my-task/boar-icon.svg";
+export { default as calenderIcon } from "./my-task/calender-icon.svg";
+export { default as deleteIcon } from "./my-task/delete-icon.svg";
 export { default as downIcon } from "./my-task/down-icon.svg";
 export { default as listIcon } from "./my-task/list-icon.svg";
 export { default as logoutIcon } from "./my-task/logout-icon.svg";

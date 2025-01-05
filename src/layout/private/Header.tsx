@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { defaultImage } from "../../assets/common";
 import { boardIcon, listIcon, logoutIcon, tasksIcon } from "../../assets/svg";
+import CreateTaskModal from "../../components/ListView.tsx/CreateTaskModal";
 import { useView } from "../../contexts/ViewContext";
 import useAuth from "../../hooks/useAuth";
 
 const Header = () => {
   const { activeView, setActiveView } = useView();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   return (
     <div className="flex gap-4 pt-[26px] flex-col">
@@ -68,6 +71,19 @@ const Header = () => {
           </button>
         </div>
       </section>
+
+      <div className="flex items-end justify-end">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex justify-end items-end bg-text-primary  px-3 py-1 rounded-md text-white w-fit"
+        >
+          AddTask
+        </button>
+        <CreateTaskModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
+      </div>
     </div>
   );
 };
