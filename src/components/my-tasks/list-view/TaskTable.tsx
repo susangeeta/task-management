@@ -6,8 +6,8 @@ import {
   dragIcon,
   editIcon,
   moreIcon,
-} from "../../assets/svg";
-import Accordion from "../../common/Accoridan";
+} from "../../../assets/svg";
+import Accordion from "../../../common/Accoridan";
 import { Task } from "./TodoTable";
 type TaskTableProps = {
   tasks: Task[];
@@ -16,6 +16,7 @@ type TaskTableProps = {
   bgColor: string;
   heading: string;
   totalTasks: number;
+  loading: boolean;
 };
 
 const TaskTable: React.FC<TaskTableProps> = ({
@@ -25,6 +26,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
   bgColor,
   heading,
   totalTasks,
+  loading,
 }) => {
   const [openEditOption, setOpenEditOption] = useState<string>("");
   const [taskIds, setTaskIds] = useState<string[]>([]);
@@ -76,6 +78,8 @@ const TaskTable: React.FC<TaskTableProps> = ({
           className="bg-background-todo-bg"
         >
           <div className="flex flex-col gap-2 justify-center">
+            {loading && <p className="p-4">Loading tasks...</p>}
+
             {tasks?.map((item: Task) => (
               <div
                 key={item.id}

@@ -1,20 +1,15 @@
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../../db/db.config";
-import useAuth from "../../hooks/useAuth";
+import { db } from "../../../db/db.config";
+import useAuth from "../../../hooks/useAuth";
 import TaskTable from "./TaskTable";
+import { Task } from "./TodoTable";
 
-export interface Task {
-  id: string;
-  title: string;
-  dueDate: string;
-  status: string;
-  category: string;
-}
-
-const TodoTable = () => {
-  const [openTodoPanel, setOpenTodoPanel] = useState(true);
+const Completed = () => {
+  const [openCompletePanel, setOpenCompletePanel] = useState(true);
   const [todos, setTodos] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -24,7 +19,7 @@ const TodoTable = () => {
     const q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "to-do")
+      where("status", "==", "completed")
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -33,6 +28,7 @@ const TodoTable = () => {
         ...(doc.data() as Omit<Task, "id">),
       }));
       setTodos(todosData);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -40,15 +36,16 @@ const TodoTable = () => {
 
   return (
     <TaskTable
-      key={1}
+      key={2}
       tasks={todos}
-      open={openTodoPanel}
+      open={openCompletePanel}
       totalTasks={todos.length}
-      heading="Todo"
-      onClose={() => setOpenTodoPanel(!openTodoPanel)}
-      bgColor="bg-background-todo-color"
+      loading={loading}
+      heading="Completed"
+      onClose={() => setOpenCompletePanel(!openCompletePanel)}
+      bgColor="bg-background-completed-bg"
     />
   );
 };
 
-export default TodoTable;
+export default Completed;

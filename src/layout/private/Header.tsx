@@ -1,15 +1,13 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultImage } from "../../assets/common";
 import { boardIcon, listIcon, logoutIcon, tasksIcon } from "../../assets/svg";
-import CreateTaskModal from "../../components/ListView.tsx/CreateTaskModal";
 import { useView } from "../../contexts/ViewContext";
 import useAuth from "../../hooks/useAuth";
 import useDb from "../../hooks/useDb";
+import TaskFilter from "./TaskFilter";
 
 const Header = () => {
   const { activeView, setActiveView } = useView();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   const { logout } = useDb();
   const navigate = useNavigate();
@@ -78,19 +76,7 @@ const Header = () => {
           <span className="text-base font-semibold">LogOut</span>
         </button>
       </section>
-
-      <div className="flex items-end justify-end w-full">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center justify-center bg-text-primary text-white w-[152px] h-[48px] rounded-[41px]"
-        >
-          AddTask
-        </button>
-      </div>
-      <CreateTaskModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-      />
+      <TaskFilter />
     </div>
   );
 };

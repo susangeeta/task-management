@@ -1,4 +1,4 @@
-import { sortIcon } from "../../assets/svg";
+import { sortIcon } from "../../../assets/svg";
 
 const MyTasksHeader = () => {
   return (
