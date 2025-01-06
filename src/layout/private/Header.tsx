@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <div className="flex gap-4 pt-[26px] flex-col">
-      <div className="flex justify-between ">
+      <div className="flex justify-between">
         <div className="flex items-center">
           <img src={tasksIcon} className="h-8 w-8" />
           <h1 className="text-xxl text-dark">TaskBuddy</h1>
@@ -79,18 +79,18 @@ const Header = () => {
         </button>
       </section>
 
-      <div className="flex items-end justify-end">
+      <div className="flex items-end justify-end w-full">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex justify-end items-end bg-text-primary  px-3 py-1 rounded-md text-white w-fit"
+          className="flex items-center justify-center bg-text-primary text-white w-[152px] h-[48px] rounded-[41px]"
         >
           AddTask
         </button>
-        <CreateTaskModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-        />
       </div>
+      <CreateTaskModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </div>
   );
 };

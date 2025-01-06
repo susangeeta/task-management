@@ -16,13 +16,17 @@ export default {
           "logout-color": "#FFF9F9  ",
           "todo-color": "#FAC3FF",
           "todo-bg": "#F1F1F1",
+          "title-color": "#000000",
+          "button-color": "#DDDADD",
+          "inprogress-bg": "#85D9F1",
+          "completed-bg": "#CEFFCC",
         },
         // Text colors
         text: {
           primary: "#7B1984",
           secondary: "#000000",
           tertiary: "#231F20D1",
-          dark: "#666666",
+          dark: "#00000099",
         },
         // Border colors
         border: {

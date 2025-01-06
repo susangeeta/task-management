@@ -4,6 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #7b1984, #7b1984);
+  border-radius: 20px;
+  border: 2px solid #f4f4f4;
+}
+
+* {
+  scrollbar-width: thin; /* Make the scrollbar thin */
+  scrollbar-color: #7b1984 #f4f4f4; /* Thumb color and track color */
+}
+
 *,
 html,
 body {

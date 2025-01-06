@@ -6,8 +6,11 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
+  QueryConstraint,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { auth, db, provider } from "../db/db.config";
 
@@ -80,16 +83,29 @@ const useDb = () => {
     }
   };
 
-  const find = async (collectionName: string) => {
+  const find = async (
+    collectionName: string,
+    filters: { [key: string]: string | number } = {}
+  ) => {
     try {
-      const querySnapshot = await getDocs(collection(db, collectionName));
+      const constraints: QueryConstraint[] = [];
+      for (const [field, value] of Object.entries(filters)) {
+        constraints.push(where(field, "==", value)); // Adjust operator if needed (e.g., <, >, etc.)
+      }
+
+      const queryConstraints = query(
+        collection(db, collectionName),
+        ...constraints
+      );
+      const querySnapshot = await getDocs(queryConstraints);
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "something went wrong";
+        error instanceof Error ? error.message : "Something went wrong";
       throw new Error(message);
     }
   };

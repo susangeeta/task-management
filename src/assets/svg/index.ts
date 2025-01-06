@@ -15,5 +15,6 @@ export { default as listIcon } from "./my-task/list-icon.svg";
 export { default as logoutIcon } from "./my-task/logout-icon.svg";
 export { default as moreIcon } from "./my-task/more-icon.svg";
 export { default as plusIcon } from "./my-task/plus-icon.svg";
+export { default as sortIcon } from "./my-task/sort.svg";
 export { default as tasksIcon } from "./my-task/tasks-icon.svg";
 export { default as union } from "./my-task/union.svg";
