@@ -16,7 +16,7 @@ const MyTasksPage = () => {
       {activeView === "list" && (
         <>
           <MyTasksHeader />
-          <div className="flex flex-col w-full gap-7">
+          <div className=" flex flex-col w-full gap-4 py-6 md:py-3 md:gap-7">
             <TodoTable />
             <InProgress />
             <Completed />

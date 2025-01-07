@@ -11,6 +11,7 @@ export { default as downIcon } from "./my-task/down-icon.svg";
 export { default as down } from "./my-task/down.svg";
 export { default as dragIcon } from "./my-task/drog-icon.svg";
 export { default as editIcon } from "./my-task/edit-icon.svg";
+export { default as exportIcon } from "./my-task/export.svg";
 export { default as fillIcon } from "./my-task/fill-icon.svg";
 export { default as listIcon } from "./my-task/list-icon.svg";
 export { default as logoutIcon } from "./my-task/logout-icon.svg";

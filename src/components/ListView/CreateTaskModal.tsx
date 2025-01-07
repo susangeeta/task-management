@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import { crossIcon } from "../../assets/svg";
@@ -99,6 +100,7 @@ const CreateTaskModal = ({
         dueDate: formData.dueDate,
         userUid: user.uid,
       });
+      console.log(response);
       handleCancel();
     } catch (error) {
       console.log(error);
@@ -145,10 +147,10 @@ const CreateTaskModal = ({
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-[20px] overflow-hidden shadow-lg w-[680px] h-[696px] flex justify-between flex-col"
+        className="bg-white rounded-[20px] overflow-hidden shadow-lg w-[357px]  md:w-[680px] h-[696px] flex justify-between flex-col"
       >
         <div>
-          <div className="border-b-2 border-b-text-dark/10 flex justify-between p-5">
+          <div className="border-b-2 border-b-text-dark/10 flex justify-between p-3 md:p-5">
             <h2 className="text-xl font-semibold text-[#2F2F2F]">
               Create Task
             </h2>
@@ -190,7 +192,7 @@ const CreateTaskModal = ({
                 <p className="text-sm text-red-500">{errors.taskDescription}</p>
               )}
             </div>
-            <div className="pt-12 grid grid-cols-3 gap-8">
+            <div className=" pt-14 md:pt-12 flex flex-col  md:grid  md:grid-cols-3 gap-3 md:gap-8">
               <div>
                 <h1 className="text-sm text-text-dark font-semibold custom-font   ">
                   Task Category*
@@ -284,14 +286,14 @@ const CreateTaskModal = ({
                 )}
               </div>
             </div>
-            <div className="w-full pt-3">
+            <div className="w-full md:pt-3">
               <label
                 htmlFor="file-upload"
                 className="block custom-font  text-base font-semibold text-text-dark"
               >
                 Attachment
               </label>
-              <div className="flex items-center justify-center w-[630px] pt-2">
+              <div className="flex items-center justify-center  md:w-[630px] pt-2">
                 <label
                   htmlFor="file-upload"
                   className="flex flex-col items-center justify-center h-[45px] w-full rounded-lg border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100"
@@ -315,7 +317,7 @@ const CreateTaskModal = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-2 bg-text-dark/20 border-b border-b-gray-400 py-5 px-7">
+        <div className="flex justify-end gap-2 bg-text-dark/20 border-b  border-b-gray-400 py-5 px-5 ">
           <button
             type="button"
             className="bg-white text-[#090909] font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"

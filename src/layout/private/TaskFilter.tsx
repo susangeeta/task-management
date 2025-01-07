@@ -1,11 +1,16 @@
 import { useState } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { crossIcon, down, searchIcon } from "../../assets/svg";
-import CreateTaskModal from "../../components/ListView.tsx/CreateTaskModal";
+import CreateTaskModal from "../../components/ListView/CreateTaskModal";
 
 const TaskFilter = () => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("Category");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [value, setValue] = useState(new Date());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const handleCategoryClick = () => {
     setIsCategoryOpen(!isCategoryOpen);
@@ -14,6 +19,10 @@ const TaskFilter = () => {
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     setIsCategoryOpen(false);
+  };
+
+  const handleDueDateClick = () => {
+    setIsCalendarOpen(!isCalendarOpen);
   };
 
   return (
@@ -33,11 +42,11 @@ const TaskFilter = () => {
             <img src={down} alt="dropdown-icon" />
           </button>
           {isCategoryOpen && (
-            <div className="absolute top-full mt-1 left-0  bg-[#fff9f9] border border-[#7B198426] rounded-xl shadow-lg w-full z-10">
-              <ul className=" text-[12px] uppercase font-semibold p-3 flex cursor-pointer flex-col gap-3">
+            <div className="absolute top-full mt-1 left-0 bg-[#fff9f9] border border-[#7B198426] rounded-xl shadow-lg w-full z-10">
+              <ul className="text-[12px] uppercase font-semibold p-3 flex cursor-pointer flex-col gap-3">
                 <li
                   onClick={() => handleCategorySelect("Work")}
-                  className=" custom-font"
+                  className="custom-font"
                 >
                   Work
                 </li>
@@ -51,21 +60,37 @@ const TaskFilter = () => {
             </div>
           )}
         </div>
-        <div>
-          <button className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex">
+        <div className="relative">
+          <button
+            onClick={handleDueDateClick}
+            className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
+          >
             <span className="text-[12px] font-semibold custom-font text-text-secondary/60">
               Due Date
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
+          {isCalendarOpen && (
+            <div className="absolute top-full mt-2 left-0 z-20">
+              <Calendar
+                value={value}
+                className=" border border-gray-300 shadow-lg rounded-xl"
+                tileClassName={({ date, view }) =>
+                  view === "month" && date.getDate() === 9
+                    ? "bg-red-500 text-white rounded-md"
+                    : "hover:bg-purple-100"
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="flex gap-3 items-center">
-        <div className="relative ">
-          <img src={searchIcon} className="absolute left-3   top-2.5" />
+        <div className="relative">
+          <img src={searchIcon} className="absolute left-3 top-2.5" />
           <input
             type="text"
-            className="border border-text-secondary/40 pl-9 w-[204px] placeholder:text-[12px] font-semibold custom-font placeholder:text-black  rounded-xxl h-[36px] "
+            className="border border-text-secondary/40 pl-9 w-[204px] placeholder:text-[12px] font-semibold custom-font placeholder:text-black rounded-xxl h-[36px]"
             placeholder="Search"
           />
           <img src={crossIcon} className="absolute right-4 top-3 h-4 w-4" />
@@ -75,7 +100,7 @@ const TaskFilter = () => {
             onClick={() => setIsModalOpen(true)}
             className="flex items-center justify-center bg-text-primary text-white w-[152px] h-[48px] rounded-[41px]"
           >
-            AddTask
+            Add Task
           </button>
         </div>
       </div>

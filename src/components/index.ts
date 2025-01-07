@@ -1,9 +1,9 @@
-export { default as AddTaskDropDown } from "./ListView.tsx/AddTaskDropdown";
 export { default as Login } from "./Login";
 
 /**
  * my tasks components
  */
+export { default as AddTaskTodoTable } from "./my-tasks/list-view/AddTaskTodoTable";
 export { default as Completed } from "./my-tasks/list-view/Completed";
 export { default as MyTasksHeader } from "./my-tasks/list-view/Header";
 export { default as InProgress } from "./my-tasks/list-view/InProgress";
