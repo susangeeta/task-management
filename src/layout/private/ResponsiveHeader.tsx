@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { defaultImage } from "../../assets/common";
 import { crossIcon, down, searchIcon } from "../../assets/svg";
-import CreateTaskModal from "../../components/ListView/CreateTaskModal";
+import { CreateTaskModal } from "../../components";
 import useAuth from "../../hooks/useAuth";
 
 const ResponsiveHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("Category");
+  const { user } = useAuth();
 
   const handleCategoryClick = () => {
     setIsCategoryOpen(!isCategoryOpen);
@@ -18,7 +19,6 @@ const ResponsiveHeader = () => {
     setIsCategoryOpen(false);
   };
 
-  const { user } = useAuth();
   return (
     <div className="md:hidden flex flex-col gap-3">
       <div className=" flex justify-between items-center bg-[#FAEEFC] w-full p-4 shadow-md ">

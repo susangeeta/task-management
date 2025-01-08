@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import ReactQuill from "react-quill";
-import { crossIcon } from "../../assets/svg";
-import Modal from "../../common/Modal";
-import useAuth from "../../hooks/useAuth";
-import useDb from "../../hooks/useDb";
+import { crossIcon } from "../../../assets/svg";
+import Modal from "../../../common/Modal";
+import useAuth from "../../../hooks/useAuth";
+import useDb from "../../../hooks/useDb";
 
 const CreateTaskModal = ({
   isModalOpen,

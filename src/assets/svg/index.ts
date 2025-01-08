@@ -21,3 +21,5 @@ export { default as searchIcon } from "./my-task/search-icon.svg";
 export { default as sortIcon } from "./my-task/sort.svg";
 export { default as tasksIcon } from "./my-task/tasks-icon.svg";
 export { default as union } from "./my-task/union.svg";
+export { default as vectorIcon } from "./my-task/vector-icon.svg";
+export { default as whiteCrossIcon } from "./my-task/white-cross-icon.svg";

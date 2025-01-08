@@ -1,29 +1,21 @@
 import { useState } from "react";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { crossIcon, down, searchIcon } from "../../assets/svg";
-import CreateTaskModal from "../../components/ListView/CreateTaskModal";
+import { CreateTaskModal } from "../../components";
+import { useTaskFilter } from "../../contexts/TaskFilter";
 
 const TaskFilter = () => {
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Category");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [value, setValue] = useState(new Date());
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const { category, setCategory, search, setSearch } = useTaskFilter();
 
-  const handleCategoryClick = () => {
-    setIsCategoryOpen(!isCategoryOpen);
-  };
-
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
+  const handleCategorySelect = (category: "work" | "personal") => {
+    setCategory(category);
     setIsCategoryOpen(false);
   };
 
-  const handleDueDateClick = () => {
-    setIsCalendarOpen(!isCalendarOpen);
-  };
+  console.log(search);
 
   return (
     <div className="flex justify-between w-full">
@@ -33,11 +25,11 @@ const TaskFilter = () => {
         </h1>
         <div className="relative">
           <button
-            onClick={handleCategoryClick}
+            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
           >
-            <span className="text-[12px] font-semibold custom-font text-text-secondary/60">
-              {selectedCategory}
+            <span className="text-[12px] font-semibold custom-font capitalize text-text-secondary/60">
+              {category || "Category"}
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
@@ -45,13 +37,13 @@ const TaskFilter = () => {
             <div className="absolute top-full mt-1 left-0 bg-[#fff9f9] border border-[#7B198426] rounded-xl shadow-lg w-full z-10">
               <ul className="text-[12px] uppercase font-semibold p-3 flex cursor-pointer flex-col gap-3">
                 <li
-                  onClick={() => handleCategorySelect("Work")}
+                  onClick={() => handleCategorySelect("work")}
                   className="custom-font"
                 >
                   Work
                 </li>
                 <li
-                  onClick={() => handleCategorySelect("Personal")}
+                  onClick={() => handleCategorySelect("personal")}
                   className="custom-font"
                 >
                   Personal
@@ -62,7 +54,7 @@ const TaskFilter = () => {
         </div>
         <div className="relative">
           <button
-            onClick={handleDueDateClick}
+            onClick={() => setIsCalendarOpen(!isCalendarOpen)}
             className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
           >
             <span className="text-[12px] font-semibold custom-font text-text-secondary/60">
@@ -70,7 +62,7 @@ const TaskFilter = () => {
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
-          {isCalendarOpen && (
+          {/* {isCalendarOpen && (
             <div className="absolute top-full mt-2 left-0 z-20">
               <Calendar
                 value={value}
@@ -82,20 +74,30 @@ const TaskFilter = () => {
                 }
               />
             </div>
-          )}
+          )} */}
         </div>
       </div>
-      <div className="flex gap-3 items-center">
-        <div className="relative">
+      <div className="flex gap-3 items-center justify-end">
+        <div className="relative border border-text-secondary/40 rounded-xxl w-full overflow-hidden h-[36px]">
           <img src={searchIcon} className="absolute left-3 top-2.5" />
           <input
+            value={search}
             type="text"
-            className="border border-text-secondary/40 pl-9 w-[204px] placeholder:text-[12px] font-semibold custom-font placeholder:text-black rounded-xxl h-[36px]"
+            onChange={(e) => setSearch(e.target.value)}
+            className=" pl-9 w-full h-full outline-none placeholder:text-[12px] font-semibold custom-font placeholder:text-black"
             placeholder="Search"
           />
-          <img src={crossIcon} className="absolute right-4 top-3 h-4 w-4" />
+          {search && (
+            <div className="h-full w-10 bg-white absolute right-0 top-0 bottom-0 flex items-center justify-center">
+              <img
+                onClick={() => setSearch("")}
+                src={crossIcon}
+                className=" bg-white right-4 top-3 h-4 w-4 cursor-pointer"
+              />
+            </div>
+          )}
         </div>
-        <div className="flex items-end justify-end w-full">
+        <div className="flex w-fit">
           <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center justify-center bg-text-primary text-white w-[152px] h-[48px] rounded-[41px]"

@@ -60,7 +60,6 @@ const BoardTask: React.FC<BoardTaskProps> = ({
                   {item.status}
                 </span>
                 <span className="capitalize text-sm font-semibold text-text-dark/50 custom-font">
-                  {" "}
                   {formatDate(item?.dueDate)}
                 </span>
               </div>
