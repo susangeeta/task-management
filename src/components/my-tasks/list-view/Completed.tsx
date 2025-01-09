@@ -18,6 +18,11 @@ const Completed = ({
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
   const { category, search } = useTaskFilter();
+  const [loadMore, setLoadMore] = useState(true);
+
+  const handleLoadMore = () => {
+    setLoadMore(!loadMore);
+  };
 
   useEffect(() => {
     if (!user.uid) return;
@@ -60,6 +65,9 @@ const Completed = ({
       heading="Completed"
       onClose={() => setOpenCompletePanel(!openCompletePanel)}
       bgColor="bg-background-completed-bg"
+      handleLoadMore={handleLoadMore}
+      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      type={"Completed"}
     />
   );
 };

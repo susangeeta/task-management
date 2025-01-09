@@ -23,6 +23,7 @@ export default {
           lightPink: "#fff9f9",
           "light-gray": "#fafafa",
           "custom-bg": "#f1f1f1",
+          "custom-black": "#1A1C20",
         },
         // Text colors
         text: {
@@ -36,6 +37,7 @@ export default {
           "custom-text": "#767676",
           "custom-dark": "#090909",
           "custom-light-pink": "#FAEEFC",
+          "custom-blue": "#2683B5",
         },
         // Border colors
         border: {

@@ -1,4 +1,10 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTaskFilter } from "../../../contexts/TaskFilter";
 import { db } from "../../../db/db.config";
@@ -25,6 +31,11 @@ const TodoTable = ({
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
   const { category, search } = useTaskFilter();
+  const [loadMore, setLoadMore] = useState(true);
+
+  const handleLoadMore = () => {
+    setLoadMore(!loadMore);
+  };
 
   useEffect(() => {
     if (!user.uid) return;
@@ -34,11 +45,14 @@ const TodoTable = ({
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "to-do")
-      // limit(PAGE_SIZE)
     );
 
     if (category) {
       q = query(q, where("category", "==", category));
+    }
+
+    if (loadMore) {
+      q = query(q, limit(8));
     }
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -56,7 +70,7 @@ const TodoTable = ({
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search]);
+  }, [user.uid, category, search, loadMore]);
 
   return (
     <TaskTable
@@ -70,6 +84,9 @@ const TodoTable = ({
       heading="Todo"
       onClose={() => setOpenTodoPanel(!openTodoPanel)}
       bgColor="bg-background-todo-color"
+      handleLoadMore={handleLoadMore}
+      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      type={"To-Do"}
     />
   );
 };

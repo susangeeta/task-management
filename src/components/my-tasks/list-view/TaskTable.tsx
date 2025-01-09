@@ -26,6 +26,9 @@ type TaskTableProps = {
   loading?: boolean;
   setTaskIds: React.Dispatch<React.SetStateAction<string[]>>;
   taskIds: string[];
+  handleLoadMore?: () => void;
+  loadMoreText?: string;
+  type?: string;
 };
 
 const TaskTable: React.FC<TaskTableProps> = ({
@@ -38,20 +41,18 @@ const TaskTable: React.FC<TaskTableProps> = ({
   loading,
   setTaskIds,
   taskIds,
+  handleLoadMore,
+  loadMoreText,
+  type,
 }) => {
   const [openEditOption, setOpenEditOption] = useState<string | null>("");
   const { findByIdAndDelete, findByIdAndUpdate } = useDb();
   const [openStatus, setOpenStatus] = useState("");
   const [openEditModal, setEditModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [visibleTasks, setVisibleTasks] = useState<number>(3);
-  const buttonRef = useRef<Record<string, React.RefObject<HTMLButtonElement>>>(
-    {}
-  );
+  const buttonRef = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
 
-  const statusRef = useRef<Record<string, React.RefObject<HTMLButtonElement>>>(
-    {}
-  );
+  const statusRef = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
 
   const handleCheckboxChange = async (id: string, status: string) => {
     try {
@@ -110,10 +111,6 @@ const TaskTable: React.FC<TaskTableProps> = ({
     setOpenEditOption(null);
   };
 
-  const handleLoadMore = () => {
-    setVisibleTasks(tasks.length);
-  };
-
   const handelStatusUpdate = async (id: string, status: string) => {
     try {
       await findByIdAndUpdate("tasks", id, { status });
@@ -162,6 +159,11 @@ const TaskTable: React.FC<TaskTableProps> = ({
             className="bg-background-todo-bg"
           >
             <div className="flex flex-col gap-2 justify-center">
+              {tasks.length === 0 && !loading && (
+                <div className="flex items-center justify-center h-[331px] ">
+                  <p className=" text-gray-500 ">No tasks in {type}</p>
+                </div>
+              )}
               {tasks.some((task) => task.status === "to-do") && (
                 <AddTaskTodoTable />
               )}
@@ -170,7 +172,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
               {tasks?.map((item: Task) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-12 items-center text-xs  h-[48px] title-color border-b border-b-text-dark/10 relative"
+                  className="grid grid-cols-12  items-center text-xs  h-[48px] title-color border-b border-b-text-dark/10 relative"
                 >
                   <div className="flex px-3 col-span-4 custom-font items-center gap-1 p-3">
                     <input
@@ -204,7 +206,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
                           pre === String(item.id) ? "" : item.id
                         )
                       }
-                      ref={getStatusRef(String(item.id))}
+                      ref={getStatusRef(String(item.id)) as any}
                       className="custom-font bg-background-button-color w-fit px-3 py-1.5 rounded uppercase "
                     >
                       {item.status}
@@ -262,7 +264,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
                     <img
                       src={moreIcon}
                       alt="More"
-                      ref={getButtonRef(String(item.id))}
+                      ref={getButtonRef(String(item.id)) as any}
                       onClick={() =>
                         setOpenEditOption((pre) =>
                           pre === String(item.id) ? "" : item.id
@@ -299,12 +301,12 @@ const TaskTable: React.FC<TaskTableProps> = ({
                   </div>
                 </div>
               ))}
-              {visibleTasks < tasks.length && (
+              {tasks.length > 0 && (
                 <button
                   onClick={handleLoadMore}
-                  className="text-blue-500 hover:underline self-center mt-4"
+                  className="hover:underline custom-font font-semibold text-text-custom-blue text-center  py-2"
                 >
-                  Load More
+                  {loadMoreText}
                 </button>
               )}
             </div>

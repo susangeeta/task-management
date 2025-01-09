@@ -1,4 +1,10 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTaskFilter } from "../../../contexts/TaskFilter";
 import { db } from "../../../db/db.config";
@@ -18,6 +24,11 @@ const InProgress = ({
   const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const { category, search } = useTaskFilter();
+  const [loadMore, setLoadMore] = useState(true);
+
+  const handleLoadMore = () => {
+    setLoadMore(!loadMore);
+  };
 
   useEffect(() => {
     if (!user.uid) return;
@@ -28,9 +39,15 @@ const InProgress = ({
       where("userUid", "==", user.uid),
       where("status", "==", "inprogress")
     );
+
     if (category) {
       q = query(q, where("category", "==", category));
     }
+
+    if (loadMore) {
+      q = query(q, limit(1));
+    }
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -45,7 +62,7 @@ const InProgress = ({
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search]);
+  }, [user.uid, category, search, loadMore]);
 
   return (
     <TaskTable
@@ -59,6 +76,9 @@ const InProgress = ({
       heading="In-Progress"
       onClose={() => setOpenInProgressPanel(!openInProgressPanel)}
       bgColor="bg-background-inprogress-bg"
+      handleLoadMore={handleLoadMore}
+      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      type={"InProgress"}
     />
   );
 };

@@ -1,6 +1,7 @@
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { BoardCard } from "../..";
+import { SearchNotFound } from "../../../assets/svg";
 import { useTaskFilter } from "../../../contexts/TaskFilter";
 import { db } from "../../../db/db.config";
 import useAuth from "../../../hooks/useAuth";
@@ -103,25 +104,39 @@ const BoardTask = () => {
   }, [user.uid, category]);
 
   return (
-    <div className="grid grid-cols-4 gap-6 ">
-      <BoardCard
-        bgColor="bg-background-todo-color"
-        heading="TO-DO"
-        tasks={todos}
-        loading={loading}
-      />
-      <BoardCard
-        bgColor="bg-background-inprogress-bg"
-        heading="In-Progress"
-        tasks={progress}
-        loading={loading}
-      />{" "}
-      <BoardCard
-        bgColor="bg-background-completed-bg"
-        heading="Completed"
-        tasks={complete}
-        loading={loading}
-      />
+    <div>
+      {todos.length || progress.length || complete.length ? (
+        <div className="grid grid-cols-4 gap-6  ">
+          <BoardCard
+            bgColor="bg-background-todo-color"
+            heading="TO-DO"
+            tasks={todos}
+            loading={loading}
+            type="To-Do"
+          />
+          <BoardCard
+            bgColor="bg-background-inprogress-bg"
+            heading="In-Progress"
+            tasks={progress}
+            loading={loading}
+            type="In-Progress"
+          />{" "}
+          <BoardCard
+            bgColor="bg-background-completed-bg"
+            heading="Completed"
+            tasks={complete}
+            loading={loading}
+            type="Completed"
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5 items-center justify-center w-full py-3 ">
+          <img src={SearchNotFound} className="h-80 " />
+          <h1 className="custom-font text-[24px] font-bold text-center">
+            It looks like we can't find any results <br /> that match.
+          </h1>
+        </div>
+      )}
     </div>
   );
 };

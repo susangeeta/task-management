@@ -10,6 +10,7 @@ type BoardTaskProps = {
   bgColor: string;
   heading: string;
   loading: boolean;
+  type: string;
 };
 
 const BoardTask: React.FC<BoardTaskProps> = ({
@@ -17,6 +18,7 @@ const BoardTask: React.FC<BoardTaskProps> = ({
   bgColor,
   heading,
   loading,
+  type,
 }) => {
   const [openMoreOption, setOpenMoreOption] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -84,6 +86,11 @@ const BoardTask: React.FC<BoardTaskProps> = ({
       </div>
 
       <div className="flex items-center p-3 flex-col  gap-5 ">
+        {tasks.length === 0 && !loading && (
+          <div className="flex items-center justify-center h-[331px] ">
+            <p className=" text-gray-500 ">No tasks in {type}</p>
+          </div>
+        )}
         {loading && <p className="p-4">Loading tasks...</p>}
         {tasks?.map((item: Task) => (
           <div
