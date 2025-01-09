@@ -4,6 +4,7 @@ export { default as taskIcon } from "./home/task-icon.svg";
 export { default as addIcon } from "./my-task/add-icon.svg";
 export { default as boardIcon } from "./my-task/boar-icon.svg";
 export { default as calenderIcon } from "./my-task/calender-icon.svg";
+export { default as checkMarkGreen } from "./my-task/check-green.svg";
 export { default as checkMark } from "./my-task/checkmark.svg";
 export { default as crossIcon } from "./my-task/cross-icon.svg";
 export { default as deleteIcon } from "./my-task/delete-icon.svg";

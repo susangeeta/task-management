@@ -51,14 +51,14 @@ const MyTasksPage = () => {
   return (
     <PrivateLayout>
       {activeView === "list" && (
-        <>
+        <div className="pb-20">
           <MyTasksHeader />
           <div className=" flex flex-col w-full gap-4 py-3 md:py-3 md:gap-7">
             <TodoTable taskIds={taskIds} setTaskIds={setTaskIds} />
             <InProgress taskIds={taskIds} setTaskIds={setTaskIds} />
             <Completed taskIds={taskIds} setTaskIds={setTaskIds} />
           </div>
-        </>
+        </div>
       )}
       {activeView === "board" && (
         <div className=" py-5">

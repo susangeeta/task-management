@@ -34,6 +34,7 @@ const TodoTable = ({
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "to-do")
+      // limit(PAGE_SIZE)
     );
 
     if (category) {

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { EditModal } from "../..";
 import {
   checkMark,
+  checkMarkGreen,
   deleteIcon,
   downIcon,
   dragIcon,
@@ -10,7 +11,7 @@ import {
   moreIcon,
 } from "../../../assets/svg";
 import Accordion from "../../../common/Accoridan";
-import Dropdown from "../../../common/Dropdown";
+import { default as Popup } from "../../../common/Popup";
 import useDb from "../../../hooks/useDb";
 import AddTaskTodoTable from "./AddTaskTodoTable";
 import { Task } from "./TodoTable";
@@ -38,16 +39,15 @@ const TaskTable: React.FC<TaskTableProps> = ({
   setTaskIds,
   taskIds,
 }) => {
-  const [openEditOption, setOpenEditOption] = useState<string>("");
+  const [openEditOption, setOpenEditOption] = useState<string | null>("");
   const { findByIdAndDelete, findByIdAndUpdate } = useDb();
-  const [openStatus, setOpenStatus] = useState(false);
+  const [openStatus, setOpenStatus] = useState("");
   const [openEditModal, setEditModal] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const handleStatusChange = (status: string) => {
-    setSelectedStatus(status);
-    // Handle other logic (e.g., updating the status of a task)
-  };
+  const [visibleTasks, setVisibleTasks] = useState<number>(3);
+  const buttonRef = useRef<HTMLImageElement>(null);
+  const statusRef = useRef<HTMLImageElement>(null);
+
   const handleCheckboxChange = async (id: string, status: string) => {
     try {
       setTaskIds((prev) =>
@@ -102,15 +102,28 @@ const TaskTable: React.FC<TaskTableProps> = ({
   const handleEditTask = (task: Task) => {
     setSelectedTask(task);
     setEditModal(true);
+    setOpenEditOption(null);
+  };
+
+  const handleLoadMore = () => {
+    setVisibleTasks(tasks.length);
+  };
+
+  const handelStatusUpdate = async (id: string, status: string) => {
+    try {
+      await findByIdAndUpdate("tasks", id, { status });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
-      <div className=" bg-white rounded-xl md:block hidden ">
+      <div className=" bg-white rounded-xl md:block hidden overflow-hidden">
         <Accordion>
           <Accordion.AccordionSummary onClick={onClose}>
             <div
-              className={`flex justify-between items-center w-full p-3 cursor-pointer ${bgColor}`}
+              className={`flex justify-between items-center w-full p-3 ${bgColor}`}
               style={{ backgroundColor: bgColor }}
             >
               <h1 className="text-base font-semibold text-black">
@@ -138,7 +151,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
               {tasks?.map((item: Task) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-12 items-center text-[14px] cursor-pointer font-medium h-[48px] title-color border-b border-b-text-dark/10 relative"
+                  className="grid grid-cols-12 items-center text-[14px] font-medium h-[48px] title-color border-b border-b-text-dark/10 relative"
                 >
                   <div className="flex px-3 col-span-4 custom-font items-center gap-1 p-3">
                     <input
@@ -149,61 +162,117 @@ const TaskTable: React.FC<TaskTableProps> = ({
                       }
                     />
                     <img src={dragIcon} alt="Drag" />
-                    <img src={checkMark} alt="Checkmark" />
+                    {item.status !== "completed" ? (
+                      <img src={checkMark} alt="Checkmark" />
+                    ) : (
+                      <img src={checkMarkGreen} alt="Checkmark" />
+                    )}
 
-                    <h1 className="custom-font">{item?.title}</h1>
+                    <h1 className="custom-font relative w-fit">
+                      {item.status === "completed" && (
+                        <div className="absolute h-[1px] bg-black w-full top-1/2 left-0 right-0 bottom-1/2"></div>
+                      )}
+                      {item?.title}
+                    </h1>
                   </div>
                   <h1 className="col-span-3 custom-font">
                     {formatDate(item?.dueDate)}
                   </h1>
-                  <button
-                    onClick={() => setOpenStatus(!openStatus)}
-                    className="col-span-2 relative  custom-font bg-background-button-color w-fit px-3 py-1.5 rounded uppercase "
-                  >
-                    {item.status}
-                    {openStatus && (
-                      <Dropdown
-                        handleStatusChange={handleStatusChange}
-                        selectedStatus={selectedStatus}
-                      />
-                    )}
-                  </button>
+                  <div className="col-span-2">
+                    <button
+                      onClick={() =>
+                        setOpenStatus((pre) =>
+                          pre === String(item.id) ? "" : item.id
+                        )
+                      }
+                      ref={statusRef}
+                      className="custom-font bg-background-button-color w-fit px-3 py-1.5 rounded uppercase "
+                    >
+                      {item.status}
+                    </button>
+                    <Popup
+                      isOpen={openStatus === item.id}
+                      onClose={() => setOpenStatus("")}
+                      anchorEl={statusRef.current}
+                      className="rounded-xl overflow-hidden h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg"
+                    >
+                      <div className="py-1">
+                        <button
+                          onClick={() => handelStatusUpdate(item.id, "to-do")}
+                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          To-Do
+                        </button>
+                        <button
+                          onClick={() =>
+                            handelStatusUpdate(item.id, "inprogress")
+                          }
+                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          In Progress
+                        </button>
+                        <button
+                          onClick={() =>
+                            handelStatusUpdate(item.id, "completed")
+                          }
+                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Completed
+                        </button>
+                      </div>
+                    </Popup>
+                  </div>
                   <button className="col-span-2 text-start custom-font capitalize  ">
                     {item.category}
                   </button>
-                  <div className="col-span-1 flex items-end justify-end px-5 relative">
+                  <div className="col-span-1 flex items-end justify-end px-5">
                     <img
                       src={moreIcon}
                       alt="More"
+                      ref={buttonRef}
                       onClick={() => setOpenEditOption(String(item.id))}
-                      className="cursor-pointer"
+                      className="cursor-pointer p-1"
                     />
 
-                    {openEditOption === item.id && (
-                      <div className="absolute -left-10 top-3 rounded-xl overflow-hidden  h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg z-10">
-                        <button
-                          onClick={() => handleEditTask(item)}
-                          className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-[#000000] w-full hover:bg-gray-50 rounded transition-colors"
-                        >
-                          <img src={editIcon} alt="Edit" className="h-4 w-4" />
-                          <span>Edit</span>
-                        </button>
-                        <button
-                          onClick={() => handleDeleteTask(item.id)}
-                          className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-[#DA2F2F] w-full hover:bg-gray-50 rounded transition-colors"
-                        >
-                          <img
-                            src={deleteIcon}
-                            alt="Delete"
-                            className="h-4 w-4"
-                          />
-                          <span>Delete</span>
-                        </button>
-                      </div>
-                    )}
+                    <Popup
+                      isOpen={openEditOption === item.id}
+                      onClose={() => setOpenEditOption("")}
+                      anchorEl={buttonRef.current}
+                      className="rounded-xl overflow-hidden h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg"
+                    >
+                      <button
+                        onClick={() => handleEditTask(item)}
+                        className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-[#000000] w-full hover:bg-gray-50 rounded transition-colors"
+                      >
+                        <img src={editIcon} alt="Edit" className="h-4 w-4" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(item.id)}
+                        className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-[#DA2F2F] w-full hover:bg-gray-50 rounded transition-colors"
+                      >
+                        <img
+                          src={deleteIcon}
+                          alt="Delete"
+                          className="h-4 w-4"
+                        />
+                        <span>Delete</span>
+                      </button>
+                    </Popup>
                   </div>
                 </div>
               ))}
+              {visibleTasks < tasks.length && (
+                <button
+                  onClick={handleLoadMore}
+                  className="text-blue-500 hover:underline self-center mt-4"
+                >
+                  Load More
+                </button>
+              )}
             </div>
           </Accordion.AccordionDetails>
         </Accordion>
@@ -252,7 +321,7 @@ const ResponsiveTable: React.FC<TaskTableProps> = ({
       <Accordion>
         <Accordion.AccordionSummary onClick={onClose} className="">
           <div
-            className={`flex justify-between items-center w-full p-2 cursor-pointer ${bgColor}`}
+            className={`flex justify-between items-center w-full p-2 ${bgColor}`}
             style={{ backgroundColor: bgColor }}
           >
             <h1 className="text-base font-semibold text-black">{heading}</h1>

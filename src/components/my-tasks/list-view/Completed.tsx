@@ -50,7 +50,7 @@ const Completed = ({
 
   return (
     <TaskTable
-      key={2}
+      key={3}
       tasks={todos}
       setTaskIds={setTaskIds}
       open={openCompletePanel}
