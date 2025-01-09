@@ -72,9 +72,9 @@ const Header = () => {
               await logout();
               navigate("/");
             }}
-            className="bg-background-logout-color  gap-2 flex items-center rounded-xl px-2 h-[40px] w-[112px]  border border-text-primary/15"
+            className="bg-background-logout-color  gap-2 flex items-center rounded-xl px-2 h-10 w-[7rem] border border-text-primary/15"
           >
-            <img src={logoutIcon} className="h-[15px] w-[15px]" />
+            <img src={logoutIcon} className="h-[15px] w-[15px] " />
             <span className="text-base font-semibold">LogOut</span>
           </button>
         </section>

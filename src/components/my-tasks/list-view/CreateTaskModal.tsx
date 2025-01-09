@@ -147,11 +147,11 @@ const CreateTaskModal = ({
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-[20px] overflow-hidden shadow-lg w-[357px]  md:w-[680px] h-[696px] flex justify-between flex-col"
+        className="bg-white rounded-xxl overflow-hidden shadow-lg w-[22.3125rem] md:w-[42.5rem] h-[43.5rem] flex justify-between flex-col"
       >
         <div>
           <div className="border-b-2 border-b-text-dark/10 flex justify-between p-3 md:p-5">
-            <h2 className="text-xl font-semibold text-[#2F2F2F]">
+            <h2 className="text-xl font-semibold text-text-custom-gray">
               Create Task
             </h2>
             <img
@@ -164,7 +164,7 @@ const CreateTaskModal = ({
             <div>
               <input
                 type="text"
-                className={`w-full p-2.5 px-4 focus:outline-none border border-gray-300 rounded-lg text-[#1E212A] bg-[#fafafa] custom-font text-base ${
+                className={`w-full p-2.5 px-4 focus:outline-none border border-gray-300 rounded-lg text-text-deep-blue bg-background-light-gray custom-font text-base ${
                   touched.taskTitle && errors.taskTitle ? "border-red-500" : ""
                 }`}
                 placeholder="Task title"
@@ -176,10 +176,10 @@ const CreateTaskModal = ({
                 <p className="text-sm text-red-500">{errors.taskTitle}</p>
               )}
             </div>
-            <div className="w-full focus:outline-none rounded-lg text-[#1E212A] text-base">
+            <div className="w-full focus:outline-none rounded-lg text-text-deep-blue text-base">
               <ReactQuill
                 theme="snow"
-                className={`h-28 bg-[#fafafa] custom-font  ${
+                className={`h-28 bg-background-light-gray custom-font  ${
                   touched.taskDescription && errors.taskDescription
                     ? "border-red-500"
                     : ""
@@ -227,7 +227,7 @@ const CreateTaskModal = ({
                 </h1>
                 <input
                   type="date"
-                  className={`w-full focus:outline-none p-1 custom-font  rounded-lg border border-gray-300  placeholder:text-text-dark/20  bg-[#fafafa] text-base ${
+                  className={`w-full focus:outline-none p-1 custom-font  rounded-lg border border-gray-300  placeholder:text-text-dark/20  bg-background-light-gray text-base ${
                     touched.dueDate && errors.dueDate ? "border-red-500" : ""
                   }`}
                   value={dueDate}
@@ -249,7 +249,7 @@ const CreateTaskModal = ({
                 <select
                   id="task-status"
                   name="task-status"
-                  className={`w-full focus:outline-none p-2 rounded-lg border border-gray-300 text-[#1E212A] bg-[#fafafa] text-base focus:border-blue-500 focus:ring-blue-500 ${
+                  className={`w-full focus:outline-none p-2 rounded-lg border border-gray-300 text-text-deep-blue bg-background-light-gray  text-text-dark text-base focus:border-blue-500 focus:ring-blue-500 ${
                     touched.taskStatus && errors.taskStatus
                       ? "border-red-500"
                       : ""
@@ -258,26 +258,16 @@ const CreateTaskModal = ({
                   onChange={(e) => setTaskStatus(e.target.value)}
                   onBlur={() => handleBlur("taskStatus")}
                 >
-                  <option
-                    value=""
-                    disabled
-                    className="text-base text-text-dark"
-                  >
+                  <option value="" disabled className="custom-font">
                     Choose
                   </option>
-                  <option value="to-do" className="text-base text-text-dark">
+                  <option value="to-do" className="custom-font">
                     To Do
                   </option>
-                  <option
-                    value="inprogress"
-                    className="text-base text-text-dark"
-                  >
+                  <option value="inprogress" className="custom-font">
                     In Progress
                   </option>
-                  <option
-                    value="completed"
-                    className="text-base text-text-dark"
-                  >
+                  <option value="completed" className="custom-font">
                     Completed
                   </option>
                 </select>
@@ -293,10 +283,10 @@ const CreateTaskModal = ({
               >
                 Attachment
               </label>
-              <div className="flex items-center justify-center  md:w-[630px] pt-2">
+              <div className="flex items-center justify-center  md:w-[39.375rem] pt-2">
                 <label
                   htmlFor="file-upload"
-                  className="flex flex-col items-center justify-center h-[45px] w-full rounded-lg border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100"
+                  className="flex flex-col items-center justify-center h-[2.8125rem] w-full rounded-lg border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100"
                 >
                   <div className="text-sm text-text-dark font-semibold">
                     Drop your files here or{" "}
@@ -320,7 +310,7 @@ const CreateTaskModal = ({
         <div className="flex justify-end gap-2 bg-text-dark/20 border-b  border-b-gray-400 py-5 px-5 ">
           <button
             type="button"
-            className="bg-white text-[#090909] font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"
+            className="bg-white text-text-custom-dark font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"
             onClick={handleCancel}
           >
             Cancel

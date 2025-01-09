@@ -74,10 +74,10 @@ const BoardTask: React.FC<BoardTaskProps> = ({
     return `${day}   ${month},${year}`;
   };
   return (
-    <div className="bg-background-todo-bg h-[40rem] overflow-y-auto overflow-hidden rounded-xl border border-[#58575112]">
+    <div className="bg-background-todo-bg h-[40rem] overflow-y-auto overflow-hidden rounded-xl border border-border-custom-gray-opaque">
       <div className="p-3">
         <button
-          className={`text-[14px] custom-font font-medium text-black px-3 py-1 w-fit rounded ${bgColor}`}
+          className={`text-xs custom-font font-medium text-black px-3 py-1 w-fit rounded ${bgColor}`}
         >
           {heading}
         </button>
@@ -92,7 +92,7 @@ const BoardTask: React.FC<BoardTaskProps> = ({
           >
             <div className="flex flex-col justify-between h-24 gap-2 ">
               <div className="flex justify-between items-center">
-                <h1 className="text-[16px] custom-font font-bold text-black ">
+                <h1 className="text-base custom-font font-bold text-black ">
                   {item.title}
                 </h1>
                 <div className="relative">
@@ -103,17 +103,17 @@ const BoardTask: React.FC<BoardTaskProps> = ({
                     className="cursor-pointer"
                   />
                   {openMoreOption === item.id && (
-                    <div className="absolute right-0 top-3 rounded-xl overflow-hidden  h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg z-10">
+                    <div className="absolute right-0 top-3 rounded-xl overflow-hidden  h-[4.75rem] w-[8.375rem] p-2 flex flex-col gap-2 bg-white border-2 border-border-custom-purple shadow-lg z-10">
                       <button
                         onClick={() => handleEditTask(item)}
-                        className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-[#000000] w-full hover:bg-gray-50 rounded transition-colors"
+                        className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-black w-full hover:bg-gray-50 rounded transition-colors"
                       >
                         <img src={editIcon} alt="Edit" className="h-4 w-4" />
                         <span>Edit</span>
                       </button>
                       <button
                         onClick={() => handleDeleteTask(item.id)}
-                        className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-[#DA2F2F] w-full hover:bg-gray-50 rounded transition-colors"
+                        className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-text-custom-red w-full hover:bg-gray-50 rounded transition-colors"
                       >
                         <img
                           src={deleteIcon}

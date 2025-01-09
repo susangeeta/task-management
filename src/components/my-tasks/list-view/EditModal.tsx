@@ -196,18 +196,20 @@ const CreateTaskModal = ({
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-[20px] overflow-hidden shadow-lg w-[1026px]  md:w-[1026px]  flex justify-between flex-col"
+        className="bg-white rounded-xxl overflow-hidden shadow-lg w-[1026px]  md:w-[1026px]  flex justify-between flex-col"
       >
         <div className="border-b-2 border-b-text-dark/10 flex justify-between p-3 md:p-5">
-          <h2 className="text-xl font-semibold text-[#2F2F2F]">Edit Task</h2>
+          <h2 className="text-xl font-semibold text-text-custom-gray">
+            Edit Task
+          </h2>
           <img
             onClick={handleCancel}
             src={crossIcon}
-            className="h-[24px] w-[24px] cursor-pointer"
+            className=" h-6 w-6 cursor-pointer"
           />
         </div>
         <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-7 h-[480px]">
+          <div className="col-span-7 h-[30rem]">
             <div className="flex flex-col gap-5 p-5 overflow-y-auto">
               <div>
                 <input
@@ -216,7 +218,7 @@ const CreateTaskModal = ({
                   value={taskTitle}
                   onChange={handleChange}
                   onBlur={() => handleBlur("taskTitle")}
-                  className={`w-full p-2.5 px-4 focus:outline-none border border-gray-300 rounded-lg text-[#1E212A] bg-[#fafafa] custom-font text-base ${
+                  className={`w-full p-2.5 px-4 focus:outline-none border border-gray-300 rounded-lg text-text-deep-blue bg-background-light-gray custom-font text-base ${
                     touched.taskTitle && errors.taskTitle
                       ? "border-red-500"
                       : ""
@@ -227,10 +229,10 @@ const CreateTaskModal = ({
                   <p className="text-sm text-red-500">{errors.taskTitle}</p>
                 )}
               </div>
-              <div className="w-full focus:outline-none rounded-lg text-[#1E212A] text-base">
+              <div className="w-full focus:outline-none rounded-lg text-text-deep-blue text-base">
                 <ReactQuill
                   theme="snow"
-                  className={`h-28 bg-[#fafafa] custom-font  ${
+                  className={`h-28 bg-background-light-gray custom-font  ${
                     touched.taskDescription && errors.taskDescription
                       ? "border-red-500"
                       : ""
@@ -286,7 +288,7 @@ const CreateTaskModal = ({
                     value={dueDate}
                     onChange={handleChange}
                     onBlur={() => handleBlur("dueDate")}
-                    className={`w-full focus:outline-none p-1 custom-font rounded-lg border border-gray-300 placeholder:text-text-dark/20 bg-[#fafafa] text-base ${
+                    className={`w-full focus:outline-none p-1 custom-font rounded-lg border border-gray-300 placeholder:text-text-dark/20 bg-background-light-gray text-base ${
                       touched.dueDate && errors.dueDate ? "border-red-500" : ""
                     }`}
                   />
@@ -307,32 +309,21 @@ const CreateTaskModal = ({
                     value={taskStatus}
                     onChange={(e) => setTaskStatus(e.target.value)}
                     onBlur={() => handleBlur("taskStatus")}
-                    className={`w-full focus:outline-none p-2 rounded-lg border border-gray-300 text-[#1E212A] bg-[#fafafa] custom-font text-base ${
-                      touched.taskStatus && errors.taskStatus
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`w-full focus:outline-none text-base text-text-dark
+ p-2 rounded-lg border border-gray-300 text-text-deep-blue bg-background-light-gray custom-font  ${
+   touched.taskStatus && errors.taskStatus ? "border-red-500" : ""
+ }`}
                   >
-                    <option
-                      value=""
-                      disabled
-                      className="text-base text-text-dark"
-                    >
+                    <option value="" disabled className="custom-font">
                       Choose
                     </option>
-                    <option value="to-do" className="text-base text-text-dark">
+                    <option value="to-do" className="custom-font">
                       To-Do
                     </option>
-                    <option
-                      value="inprogress"
-                      className="text-base text-text-dark"
-                    >
+                    <option value="inprogress" className="custom-font">
                       In Progress
                     </option>
-                    <option
-                      value="completed"
-                      className="text-base text-text-dark"
-                    >
+                    <option value="completed" className="custom-font">
                       Completed
                     </option>
                   </select>
@@ -343,11 +334,11 @@ const CreateTaskModal = ({
               </div>
             </div>
           </div>
-          <div className="col-span-5 bg-[#f1f1f1] flex flex-col ">
-            <div className="custom-font text-[16px] font-semibold text-[#767676] bg-white p-4 border-b border-b-gray-300">
+          <div className="col-span-5 bg-background-custom-bg flex flex-col ">
+            <div className="custom-font text-base font-semibold text-text-custom-text bg-white p-4 border-b border-b-gray-300">
               Activity
             </div>
-            <div className="flex flex-col gap-2 text-[10px] text-[#1E212A] font-normal p-4  ">
+            <div className="flex flex-col gap-2 text-[10px] text-text-deep-blue font-normal p-4  ">
               <div className="flex justify-between">
                 <p className="custom-font">You created this task</p>
                 <p>Dec 27 at 1:15 pm</p>
@@ -365,17 +356,17 @@ const CreateTaskModal = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-2 bg-[#f1f1f1] border-t-2 border-b-t-gray-800 py-5 px-5 overflow-hidden ">
+        <div className="flex justify-end gap-2 bg-background-custom-bg border-t-2 border-b-t-gray-800 py-5 px-5 overflow-hidden ">
           <button
             type="button"
-            className="bg-white text-[#090909] font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"
+            className="bg-white text-text-custom-dark font-bold w-[6.5625rem] h-[2.5rem] flex items-center justify-center border border-text-dark/50 rounded-full"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className={`bg-text-primary/50 text-white font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full ${
+            className={`bg-text-primary/50 text-white font-bold w-[6.5625rem] h-[2.5rem] flex items-center justify-center border border-text-dark/50 rounded-full ${
               isSubmitDisabled ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={isSubmitDisabled}

@@ -20,7 +20,7 @@ const TaskFilter = () => {
   return (
     <div className="flex justify-between w-full">
       <div className="flex gap-3 items-center">
-        <h1 className="text-[12px] font-semibold custom-font text-text-secondary/60">
+        <h1 className="text-xxxl font-semibold custom-font text-text-secondary/60">
           Filter by :
         </h1>
         <div className="relative">
@@ -28,14 +28,14 @@ const TaskFilter = () => {
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
           >
-            <span className="text-[12px] font-semibold custom-font capitalize text-text-secondary/60">
+            <span className="text-xxxl font-semibold custom-font capitalize text-text-secondary/60">
               {category || "Category"}
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
           {isCategoryOpen && (
-            <div className="absolute top-full mt-1 left-0 bg-[#fff9f9] border border-[#7B198426] rounded-xl shadow-lg w-full z-10">
-              <ul className="text-[12px] uppercase font-semibold p-3 flex cursor-pointer flex-col gap-3">
+            <div className="absolute top-full mt-1 left-0 bg-background-lightPink border border-border-light rounded-xl shadow-lg w-full z-10">
+              <ul className="text-xxxl uppercase font-semibold p-3 flex cursor-pointer flex-col gap-3">
                 <li
                   onClick={() => handleCategorySelect("work")}
                   className="custom-font"
@@ -57,24 +57,11 @@ const TaskFilter = () => {
             onClick={() => setIsCalendarOpen(!isCalendarOpen)}
             className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
           >
-            <span className="text-[12px] font-semibold custom-font text-text-secondary/60">
+            <span className="text-xxxl font-semibold custom-font text-text-secondary/60">
               Due Date
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
-          {/* {isCalendarOpen && (
-            <div className="absolute top-full mt-2 left-0 z-20">
-              <Calendar
-                value={value}
-                className=" border border-gray-300 shadow-lg rounded-xl"
-                tileClassName={({ date, view }) =>
-                  view === "month" && date.getDate() === 9
-                    ? "bg-red-500 text-white rounded-md"
-                    : "hover:bg-purple-100"
-                }
-              />
-            </div>
-          )} */}
         </div>
       </div>
       <div className="flex gap-3 items-center justify-end">
@@ -84,7 +71,7 @@ const TaskFilter = () => {
             value={search}
             type="text"
             onChange={(e) => setSearch(e.target.value)}
-            className=" pl-9 w-full h-full outline-none placeholder:text-[12px] font-semibold custom-font placeholder:text-black"
+            className=" pl-9 w-full h-full outline-none placeholder:text-xxxl font-semibold custom-font placeholder:text-black"
             placeholder="Search"
           />
           {search && (
@@ -100,7 +87,7 @@ const TaskFilter = () => {
         <div className="flex w-fit">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center bg-text-primary text-white w-[152px] h-[48px] rounded-[41px]"
+            className="flex items-center justify-center bg-text-primary text-white w-[9.5rem] h-[3rem] rounded-[41px]"
           >
             Add Task
           </button>

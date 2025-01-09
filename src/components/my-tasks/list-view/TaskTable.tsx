@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { createRef, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { EditModal } from "../..";
 import {
@@ -45,8 +45,13 @@ const TaskTable: React.FC<TaskTableProps> = ({
   const [openEditModal, setEditModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [visibleTasks, setVisibleTasks] = useState<number>(3);
-  const buttonRef = useRef<HTMLImageElement>(null);
-  const statusRef = useRef<HTMLImageElement>(null);
+  const buttonRef = useRef<Record<string, React.RefObject<HTMLButtonElement>>>(
+    {}
+  );
+
+  const statusRef = useRef<Record<string, React.RefObject<HTMLButtonElement>>>(
+    {}
+  );
 
   const handleCheckboxChange = async (id: string, status: string) => {
     try {
@@ -117,6 +122,20 @@ const TaskTable: React.FC<TaskTableProps> = ({
     }
   };
 
+  const getStatusRef = (id: string) => {
+    if (!statusRef.current[id]) {
+      statusRef.current[id] = createRef();
+    }
+    return statusRef.current[id];
+  };
+
+  const getButtonRef = (id: string) => {
+    if (!buttonRef.current[id]) {
+      buttonRef.current[id] = createRef();
+    }
+    return buttonRef.current[id];
+  };
+
   return (
     <>
       <div className=" bg-white rounded-xl md:block hidden overflow-hidden">
@@ -151,7 +170,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
               {tasks?.map((item: Task) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-12 items-center text-[14px] font-medium h-[48px] title-color border-b border-b-text-dark/10 relative"
+                  className="grid grid-cols-12 items-center text-xs  h-[48px] title-color border-b border-b-text-dark/10 relative"
                 >
                   <div className="flex px-3 col-span-4 custom-font items-center gap-1 p-3">
                     <input
@@ -185,7 +204,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
                           pre === String(item.id) ? "" : item.id
                         )
                       }
-                      ref={statusRef}
+                      ref={getStatusRef(String(item.id))}
                       className="custom-font bg-background-button-color w-fit px-3 py-1.5 rounded uppercase "
                     >
                       {item.status}
@@ -193,14 +212,19 @@ const TaskTable: React.FC<TaskTableProps> = ({
                     <Popup
                       isOpen={openStatus === item.id}
                       onClose={() => setOpenStatus("")}
-                      anchorEl={statusRef.current}
-                      className="rounded-xl overflow-hidden h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg"
+                      anchorEl={getStatusRef(item.id).current}
+                      className="rounded-xl overflow-hidden h-[100px] w-[8rem] flex flex-col gap-2 bg-background-lightPink border-2 border-border-light/15 shadow-lg"
                     >
-                      <div className="py-1">
+                      <div
+                        className={`text-xxxl flex flex-col  gap-2 p-3 items-start text-black`}
+                      >
                         <button
                           onClick={() => handelStatusUpdate(item.id, "to-do")}
-                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
-                          role="menuitem"
+                          className={`custom-font uppercase ${
+                            item.status === "to-do"
+                              ? "font-bold"
+                              : "font-semibold "
+                          }`}
                         >
                           To-Do
                         </button>
@@ -208,8 +232,11 @@ const TaskTable: React.FC<TaskTableProps> = ({
                           onClick={() =>
                             handelStatusUpdate(item.id, "inprogress")
                           }
-                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
-                          role="menuitem"
+                          className={`custom-font uppercase ${
+                            item.status === "inprogress"
+                              ? "font-bold"
+                              : "font-semibold "
+                          }`}
                         >
                           In Progress
                         </button>
@@ -217,8 +244,11 @@ const TaskTable: React.FC<TaskTableProps> = ({
                           onClick={() =>
                             handelStatusUpdate(item.id, "completed")
                           }
-                          className="text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100"
-                          role="menuitem"
+                          className={`custom-font uppercase ${
+                            item.status === "completed"
+                              ? "font-bold"
+                              : "font-semibold "
+                          }`}
                         >
                           Completed
                         </button>
@@ -232,27 +262,31 @@ const TaskTable: React.FC<TaskTableProps> = ({
                     <img
                       src={moreIcon}
                       alt="More"
-                      ref={buttonRef}
-                      onClick={() => setOpenEditOption(String(item.id))}
+                      ref={getButtonRef(String(item.id))}
+                      onClick={() =>
+                        setOpenEditOption((pre) =>
+                          pre === String(item.id) ? "" : item.id
+                        )
+                      }
                       className="cursor-pointer p-1"
                     />
 
                     <Popup
                       isOpen={openEditOption === item.id}
                       onClose={() => setOpenEditOption("")}
-                      anchorEl={buttonRef.current}
-                      className="rounded-xl overflow-hidden h-[76px] w-[134px] p-2 flex flex-col gap-2 bg-white border-2 border-[#7B19841F] shadow-lg"
+                      anchorEl={getButtonRef(item.id).current}
+                      className="rounded-xl overflow-hidden h-[4.75rem] w-[8.375rem] p-2 flex flex-col gap-2 bg-white border-2 border-border-custom-purple shadow-lg"
                     >
                       <button
                         onClick={() => handleEditTask(item)}
-                        className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-[#000000] w-full hover:bg-gray-50 rounded transition-colors"
+                        className="flex px-1 items-center gap-2 text-base font-semibold custom-font text-black w-full hover:bg-gray-50 rounded transition-colors"
                       >
                         <img src={editIcon} alt="Edit" className="h-4 w-4" />
                         <span>Edit</span>
                       </button>
                       <button
                         onClick={() => handleDeleteTask(item.id)}
-                        className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-[#DA2F2F] w-full hover:bg-gray-50 rounded transition-colors"
+                        className="flex px-1 text-base gap-2 font-semibold items-center custom-font text-text-custom-red w-full hover:bg-gray-50 rounded transition-colors"
                       >
                         <img
                           src={deleteIcon}
@@ -344,7 +378,7 @@ const ResponsiveTable: React.FC<TaskTableProps> = ({
             {tasks?.map((item: Task) => (
               <div
                 key={item.id}
-                className="flex items-center text-[14px] cursor-pointer font-medium title-color border-b border-b-text-dark/10 relative"
+                className="flex items-center text-xs cursor-pointer font-medium title-color border-b border-b-text-dark/10 relative"
               >
                 <div className="flex px-3  custom-font items-center gap-1 p-3">
                   <input

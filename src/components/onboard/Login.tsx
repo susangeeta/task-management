@@ -54,9 +54,9 @@ const Login = () => {
 
       {/* Responsikve Screen*/}
 
-      <div className="flex flex-col gap-7 relative items-center justify-center h-screen">
+      <div className=" md:hidden flex flex-col gap-7 relative items-center justify-center h-screen">
         <div className="absolute inset-0 flex items-center  ">
-          <img src={mobilebg} alt="circle" className="w-full h-full" />
+          <img src={mobilebg} alt="circle" className="w-full h-[45rem]" />
         </div>
         <div className="flex flex-col items-center gap-1.5 text-center">
           <div className="flex items-center gap-1">
@@ -80,7 +80,7 @@ const Login = () => {
             await signInWithGoogle();
             navigate("/my-tasks");
           }}
-          className="bg-background-secondary z-[999] h-[48px] w-[259px] text-[16px] font-bold rounded-2xl flex items-center justify-center gap-3 cursor-pointer"
+          className="bg-background-secondary z-[999] h-[48px] w-[259px] text-base font-bold rounded-2xl flex items-center justify-center gap-3 cursor-pointer"
         >
           <img src="/google.png" alt="Google Icon" className="h-5 w-5" />
           <span className="text-white custom-responsive-font">

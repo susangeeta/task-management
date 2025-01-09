@@ -15,6 +15,7 @@ const Popup = ({
   children,
   className,
 }: PopupType) => {
+  console.log(anchorEl);
   const popupRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 

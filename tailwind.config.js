@@ -20,6 +20,9 @@ export default {
           "button-color": "#DDDADD",
           "inprogress-bg": "#85D9F1",
           "completed-bg": "#CEFFCC",
+          lightPink: "#fff9f9",
+          "light-gray": "#fafafa",
+          "custom-bg": "#f1f1f1",
         },
         // Text colors
         text: {
@@ -27,19 +30,28 @@ export default {
           secondary: "#000000",
           tertiary: "#231F20D1",
           dark: "#00000099",
+          "custom-red": "#DA2F2F",
+          "custom-gray": "#2F2F2F",
+          "deep-blue": "#1E212A",
+          "custom-text": "#767676",
+          "custom-dark": "#090909",
+          "custom-light-pink": "#FAEEFC",
         },
         // Border colors
         border: {
           light: "#7B198426",
+          "custom-purple": "#7B19841F",
+          "custom-gray-opaque": "#58575112",
         },
       },
       fontSize: {
-        xs: ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
+        xs: ["0.875rem.", { lineHeight: "1.225rem", fontWeight: "500" }],
         sm: ["11.64px", { lineHeight: "1.018rem", fontWeight: "400" }],
         base: ["1rem", { lineHeight: "1.5rem", fontWeight: "400" }],
         lg: ["  1.364rem", { lineHeight: "1.909", fontWeight: "500" }],
         xl: ["1.25rem", { lineHeight: "1.75rem", fontWeight: "500" }],
         xxl: ["1.5rem", { lineHeight: "2.1rem", fontWeight: "600" }],
+        xxxl: ["0.75rem", { lineHeight: "1.05rem" }],
 
         "2xl": ["1.637rem", { lineHeight: "2.291rem", fontWeight: "600" }],
 
@@ -56,6 +68,8 @@ export default {
         "2xl": "1.182rem",
         xxl: "60px",
         full: "9999px",
+        xxl: "20px",
+        xxxl: "41px",
       },
     },
   },

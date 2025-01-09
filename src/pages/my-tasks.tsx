@@ -70,19 +70,19 @@ const MyTasksPage = () => {
         <div className="flex items-center justify-center ">
           <div className="bg-[#1A1C20] h-[52px] w-[356px] fixed  bottom-1 rounded-xl flex items-center px-2  justify-between">
             <div className="flex items-center gap-2">
-              <button className="text-white flex gap-6 items-center text-[12px] font-semibold rounded-xl  custom-font border border-[#FFFFFF] px-3 py-1 ">
+              <button className="text-white flex gap-6 items-center text-xxxl font-semibold rounded-xl  custom-font border border-[#FFFFFF] px-3 py-1 ">
                 {taskIds.length} Tasks Selected
                 <img onClick={() => setTaskIds([])} src={whiteCrossIcon} />
               </button>
               <img src={vectorIcon} />
             </div>
             <div className="flex gap-2 items-center">
-              <button className="bg-[#2a2b2f] text-white custom-font font-semibold w-[63px] h-[27px] rounded-xl border border-[#FFFFFF] text-[12px]">
+              <button className="bg-[#2a2b2f] text-white custom-font font-semibold w-[63px] h-[27px] rounded-xl border border-[#FFFFFF] text-xxxl">
                 Status
               </button>
               <button
                 onClick={handleDeleteMultipleTasks}
-                className="bg-[#3a1f23] text-[#E13838] custom-font font-semibold w-[63px] h-[27px] rounded-xl border border-[#E13838] text-[12px]"
+                className="bg-[#3a1f23] text-[#E13838] custom-font font-semibold w-[63px] h-[27px] rounded-xl border border-[#E13838] text-xxxl"
               >
                 Delete
               </button>
