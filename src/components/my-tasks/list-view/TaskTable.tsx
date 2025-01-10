@@ -329,6 +329,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
           bgColor={bgColor}
           heading={heading}
           taskIds={taskIds}
+          totalTasks={totalTasks}
           setTaskIds={setTaskIds}
         />
       </div>
@@ -344,6 +345,7 @@ const ResponsiveTable: React.FC<TaskTableProps> = ({
   heading,
   loading,
   setTaskIds,
+  totalTasks,
   taskIds,
 }) => {
   const handleCheckboxChange = (id: string) => {
@@ -353,14 +355,16 @@ const ResponsiveTable: React.FC<TaskTableProps> = ({
   };
 
   return (
-    <div className=" bg-white  custom-rounded-2xl">
+    <div className=" bg-white  custom-rounded-2xl overflow-hidden px-3">
       <Accordion>
         <Accordion.AccordionSummary onClick={onClose} className="">
           <div
             className={`flex justify-between items-center w-full p-2 ${bgColor}`}
             style={{ backgroundColor: bgColor }}
           >
-            <h1 className="text-base font-semibold text-black">{heading}</h1>
+            <h1 className="text-base font-semibold text-black">
+              {heading} ({totalTasks})
+            </h1>
             <img
               src={downIcon}
               className={`h-9 w-9 ease-in-out transition-transform duration-200 ${

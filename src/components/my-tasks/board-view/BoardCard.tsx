@@ -99,8 +99,11 @@ const BoardTask: React.FC<BoardTaskProps> = ({
           >
             <div className="flex flex-col justify-between h-24 gap-2 ">
               <div className="flex justify-between items-center">
-                <h1 className="text-base custom-font font-bold text-black ">
-                  {item.title}
+                <h1 className="custom-font relative w-fit">
+                  {item.status === "completed" && (
+                    <div className="absolute h-[1px] bg-black w-full top-1/2 left-0 right-0 bottom-1/2"></div>
+                  )}
+                  {item?.title}
                 </h1>
                 <div className="relative">
                   <img

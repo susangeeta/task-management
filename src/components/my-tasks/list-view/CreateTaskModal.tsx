@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import ReactQuill from "react-quill";
+import Swal from "sweetalert2";
 import { crossIcon } from "../../../assets/svg";
 import Modal from "../../../common/Modal";
 import useAuth from "../../../hooks/useAuth";
@@ -18,6 +18,7 @@ const CreateTaskModal = ({
   const [taskCategory, setTaskCategory] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const { create } = useDb();
   const { user } = useAuth();
@@ -79,6 +80,11 @@ const CreateTaskModal = ({
 
     if (hasError) {
       setErrors(newErrors);
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please fill in all required fields.",
+      });
       return;
     }
 
@@ -92,6 +98,7 @@ const CreateTaskModal = ({
     };
 
     try {
+      setLoading(true);
       const response = await create("tasks", {
         category: formData.taskCategory,
         title: formData.taskTitle,
@@ -101,9 +108,23 @@ const CreateTaskModal = ({
         userUid: user.uid,
       });
       console.log(response);
+
+      Swal.fire({
+        icon: "success",
+        title: "Task Created",
+        text: "Your task has been created successfully.",
+      });
+
       handleCancel();
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while creating the task. Please try again.",
+      });
+    } finally {
+      setLoading(false);
     }
 
     setIsModalOpen(false);
@@ -307,7 +328,7 @@ const CreateTaskModal = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-2 bg-text-dark/20 border-b  border-b-gray-400 py-5 px-5 ">
+        <div className="flex justify-end gap-2 bg-text-dark/20 border-b  border-b-gray-400 md:py-5 md:px-5">
           <button
             type="button"
             className="bg-white text-text-custom-dark font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"
@@ -317,10 +338,16 @@ const CreateTaskModal = ({
           </button>
           <button
             type="submit"
-            className="bg-text-primary/50 text-white font-bold w-[105px] h-[40px] flex items-center justify-center border border-text-dark/50 rounded-full"
+            className={`bg-text-primary/50 text-white font-bold w-[6.5625rem] h-[2.5rem] flex items-center justify-center border border-text-dark/50 rounded-full ${
+              isSubmitDisabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={isSubmitDisabled}
           >
-            CREATE
+            {loading ? (
+              <div className="spinner-border animate-spin h-5 w-5 border-b-2 border-white rounded-full"></div>
+            ) : (
+              "CREATE"
+            )}
           </button>
         </div>
       </form>

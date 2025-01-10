@@ -17,6 +17,7 @@ const MyTasksPage = () => {
   const [taskIds, setTaskIds] = useState<string[]>([]);
   const { findByIdAndDelete, findByIdAndUpdate } = useDb();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const handleDeleteMultipleTasks = async () => {
     if (taskIds.length === 0) return;
     Swal.fire({

@@ -1,7 +1,6 @@
 import {
   collection,
   getDocs,
-  limit,
   onSnapshot,
   orderBy,
   query,
@@ -45,7 +44,6 @@ const TodoTable = ({
       where("status", "==", "to-do"),
       orderBy("dueDate", "asc")
     );
-
     if (category) {
       q = query(q, where("category", "==", category));
     }
@@ -55,29 +53,15 @@ const TodoTable = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
-    q = query(q, limit(9));
-
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Task, "id">),
       }));
-
-      if (todosData.length > 8) {
-        setTodos(todosData.slice(0, 8));
-        setHasMore(true);
-      } else {
-        setTodos(todosData);
-        setHasMore(false);
-      }
-
+      const filteredTasks = todosData.filter((task) =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+      );
+      setTodos(filteredTasks);
       setLoading(false);
     });
 
@@ -92,7 +76,7 @@ const TodoTable = ({
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "to-do"),
-      orderBy("dueDate", "asc")
+      orderBy("createdAt", "asc")
     );
 
     if (category) {
@@ -100,25 +84,28 @@ const TodoTable = ({
     }
 
     if (dueDate) {
-      const formattedDueDate = new Date(dueDate).toISOString();
-      q = query(q, where("dueDate", "<=", formattedDueDate));
+      const formattedDueDate = new Date(dueDate);
+      q = query(q, where("createdAt", "<", formattedDueDate));
     }
 
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
     const querySnapshot = await getDocs(q);
     const todosData: Task[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Task, "id">),
     }));
+    const filteredTasks = todosData.filter((task) =>
+      task.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setTodos(filteredTasks);
 
-    setTodos(todosData);
-    setHasMore(false);
+    if (todosData.length > 8) {
+      setTodos(todosData.slice(0, 8));
+      setHasMore(true);
+    } else {
+      setTodos(todosData);
+      setHasMore(false);
+    }
+
     setLoading(false);
   };
 

@@ -1,7 +1,6 @@
 import {
   collection,
   getDocs,
-  limit,
   onSnapshot,
   orderBy,
   query,
@@ -38,24 +37,14 @@ const Completed = ({
       where("status", "==", "completed"),
       orderBy("dueDate", "asc")
     );
-
     if (category) {
       q = query(q, where("category", "==", category));
     }
+
     if (dueDate) {
       const formattedDueDate = new Date(dueDate).toISOString();
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
-
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
-
-    q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
@@ -92,23 +81,26 @@ const Completed = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
+    // if (search) {
+    //   q = query(
+    //     q,
+    //     where("title", ">=", search),
+    //     where("title", "<=", search + "\uf8ff")
+    //   );
+    // }
 
     const querySnapshot = await getDocs(q);
     const todosData: Task[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Task, "id">),
     }));
-
-    setTodos(todosData);
-    setHasMore(false);
+    const filteredTasks = todosData.filter((task) =>
+      task.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setTodos(filteredTasks);
     setLoading(false);
+
+    setHasMore(false);
   };
 
   return (

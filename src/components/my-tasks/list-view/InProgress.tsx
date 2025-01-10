@@ -1,7 +1,6 @@
 import {
   collection,
   getDocs,
-  limit,
   onSnapshot,
   orderBy,
   query,
@@ -38,7 +37,6 @@ const InProgress = ({
       where("status", "==", "inprogress"),
       orderBy("dueDate", "asc")
     );
-
     if (category) {
       q = query(q, where("category", "==", category));
     }
@@ -48,21 +46,11 @@ const InProgress = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
-    q = query(q, limit(9));
-
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Task, "id">),
       }));
-
       const filteredTasks = todosData.filter((task) =>
         task.title.toLowerCase().includes(search.toLowerCase())
       );
@@ -92,13 +80,6 @@ const InProgress = ({
       const formattedDueDate = new Date(dueDate).toISOString();
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
-    if (search) {
-      q = query(
-        q,
-        where("title", ">=", search),
-        where("title", "<=", search + "\uf8ff")
-      );
-    }
 
     const querySnapshot = await getDocs(q);
     const todosData: Task[] = querySnapshot.docs.map((doc) => ({
@@ -106,8 +87,18 @@ const InProgress = ({
       ...(doc.data() as Omit<Task, "id">),
     }));
 
-    setTodos(todosData);
-    setHasMore(false);
+    const filteredTasks = todosData.filter((task) =>
+      task.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setTodos(filteredTasks);
+    if (todosData.length > 8) {
+      setTodos(todosData.slice(0, 8));
+      setHasMore(true);
+    } else {
+      setTodos(todosData);
+      setHasMore(false);
+    }
+
     setLoading(false);
   };
 

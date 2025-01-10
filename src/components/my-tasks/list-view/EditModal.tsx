@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import Swal from "sweetalert2";
@@ -44,8 +43,6 @@ const CreateTaskModal = ({
     const { name, value } = e.target;
     if (name === "taskTitle") {
       setTaskTitle(value);
-    } else if (name === "taskDescription") {
-      setTaskDescription(value);
     } else if (name === "taskCategory") {
       setTaskCategory(value);
     } else if (name === "dueDate") {
@@ -57,7 +54,6 @@ const CreateTaskModal = ({
 
   const [errors, setErrors] = useState({
     taskTitle: "",
-    taskDescription: "",
     taskCategory: "",
     dueDate: "",
     taskStatus: "",
@@ -65,7 +61,6 @@ const CreateTaskModal = ({
 
   const [touched, setTouched] = useState({
     taskTitle: false,
-    taskDescription: false,
     taskCategory: false,
     dueDate: false,
     taskStatus: false,
@@ -79,7 +74,6 @@ const CreateTaskModal = ({
     e.preventDefault();
     setErrors({
       taskTitle: "",
-      taskDescription: "",
       taskCategory: "",
       dueDate: "",
       taskStatus: "",
@@ -92,10 +86,7 @@ const CreateTaskModal = ({
       newErrors.taskTitle = "Task Title is required.";
       hasError = true;
     }
-    if (!taskDescription) {
-      newErrors.taskDescription = "Task Description is required.";
-      hasError = true;
-    }
+
     if (!taskCategory) {
       newErrors.taskCategory = "Task Category is required.";
       hasError = true;
@@ -116,7 +107,6 @@ const CreateTaskModal = ({
 
     const formData = {
       taskTitle,
-      taskDescription,
       taskCategory,
       dueDate,
       taskStatus,
@@ -128,7 +118,6 @@ const CreateTaskModal = ({
       const updatedTask = await findByIdAndUpdate("tasks", selectedTask.id, {
         category: formData.taskCategory,
         title: formData.taskTitle,
-        description: formData.taskDescription,
         status: formData.taskStatus,
         dueDate: formData.dueDate,
         userUid: user.uid,
@@ -168,7 +157,6 @@ const CreateTaskModal = ({
 
     setTouched({
       taskTitle: false,
-      taskDescription: false,
       taskCategory: false,
       dueDate: false,
       taskStatus: false,
@@ -176,7 +164,6 @@ const CreateTaskModal = ({
 
     setErrors({
       taskTitle: "",
-      taskDescription: "",
       taskCategory: "",
       dueDate: "",
       taskStatus: "",
@@ -186,7 +173,7 @@ const CreateTaskModal = ({
   };
 
   const isSubmitDisabled =
-    !taskTitle || !taskDescription || !taskCategory || !dueDate || !taskStatus;
+    !taskTitle || !taskCategory || !dueDate || !taskStatus;
 
   return (
     <Modal
@@ -232,20 +219,12 @@ const CreateTaskModal = ({
               <div className="w-full focus:outline-none rounded-lg text-text-deep-blue text-base">
                 <ReactQuill
                   theme="snow"
-                  className={`h-28 bg-background-light-gray custom-font  ${
-                    touched.taskDescription && errors.taskDescription
-                      ? "border-red-500"
-                      : ""
-                  }`}
+                  className={`h-28 bg-background-light-gray custom-font  
+                  `}
                   value={taskDescription}
                   onChange={setTaskDescription}
                   onBlur={() => handleBlur("taskDescription")}
                 />
-                {touched.taskDescription && errors.taskDescription && (
-                  <p className="text-sm text-red-500">
-                    {errors.taskDescription}
-                  </p>
-                )}
               </div>
               <div className=" pt-14 md:pt-12 flex flex-col  md:grid  md:grid-cols-3 gap-3 md:gap-8">
                 <div>
