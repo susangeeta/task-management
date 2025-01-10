@@ -47,6 +47,14 @@ const InProgress = ({
       const formattedDueDate = new Date(dueDate).toISOString();
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
+
+    if (search) {
+      q = query(
+        q,
+        where("title", ">=", search),
+        where("title", "<=", search + "\uf8ff")
+      );
+    }
     q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -83,6 +91,13 @@ const InProgress = ({
     if (dueDate) {
       const formattedDueDate = new Date(dueDate).toISOString();
       q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
+    if (search) {
+      q = query(
+        q,
+        where("title", ">=", search),
+        where("title", "<=", search + "\uf8ff")
+      );
     }
 
     const querySnapshot = await getDocs(q);

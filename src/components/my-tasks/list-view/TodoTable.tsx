@@ -55,6 +55,13 @@ const TodoTable = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
+    if (search) {
+      q = query(
+        q,
+        where("title", ">=", search),
+        where("title", "<=", search + "\uf8ff")
+      );
+    }
     q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -97,6 +104,13 @@ const TodoTable = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
+    if (search) {
+      q = query(
+        q,
+        where("title", ">=", search),
+        where("title", "<=", search + "\uf8ff")
+      );
+    }
     const querySnapshot = await getDocs(q);
     const todosData: Task[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -107,7 +121,6 @@ const TodoTable = ({
     setHasMore(false);
     setLoading(false);
   };
-  console.log(todos);
 
   return (
     <TaskTable
