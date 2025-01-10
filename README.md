@@ -48,3 +48,51 @@ export default tseslint.config({
   },
 });
 ```
+
+Overview
+This Task Management Application is designed to help users efficiently manage their tasks, ensuring better productivity and organization. The application includes user authentication, advanced task categorization, and a user-friendly interface for task handling.
+
+Features
+User Authentication
+Firebase Authentication with Google Sign-In.
+Secure profile management for each user.
+Task Management
+Create, edit, and delete tasks.
+Categorize tasks (e.g., Work, Personal) and tag them for easier filtering.
+Set due dates and rearrange tasks using drag-and-drop functionality.
+Sort tasks by due dates (ascending/descending).
+Batch Actions
+Perform batch operations like deleting or marking multiple tasks as complete.
+Task History and Activity Log
+View an activity log that tracks task creation, edits, and deletions.
+Filter Options
+Filter tasks by tags, categories, and date ranges.
+Search tasks by title.
+Board/List View
+Switch between a Kanban-style board view and a standard list view.
+Responsive Design
+Fully responsive with a mobile-first design, ensuring seamless usage across devices.
+Installation and Running the Project
+Clone the Repository
+
+bash
+Copy code
+git clone https://github.com/susangeeta/task-management.git  
+cd repo-name  
+Install Dependencies
+bash
+npm start  
+Build for Production
+
+bash
+Copy code
+npm run build  
+Deployment
+The live version of this application is available here:
+Live Application URL
+Challenges and Solutions
+Solution: Used the react-beautiful-dnd library to implement a seamless drag-and-drop experience for task rearrangement.
+Challenge 2: Managing Real-Time Updates with Firebase
+Solution: Utilized Firebase Realtime Database and React Query to ensure efficient and consistent data fetching and state synchronization.
+Challenge 3: Responsive Design
+Solution: Adopted a mobile-first design approach using CSS and Tailwind CSS to ensure a smooth user experience across all devices.
