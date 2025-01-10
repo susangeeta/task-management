@@ -1,9 +1,11 @@
 import {
   collection,
   getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -30,20 +32,25 @@ const TodoTable = ({
   const [openTodoPanel, setOpenTodoPanel] = useState(true);
   const [todos, setTodos] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [lastVisible, setLastVisible] = useState<any>(null); // Track the last document
+  const [hasMore, setHasMore] = useState(false); // Check if more tasks are available
   const { user } = useAuth();
   const { category, search, dueDate } = useTaskFilter();
-  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     if (!user.uid) return;
+
+    setLoading(true);
 
     const collectionRef = collection(db, "tasks");
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "to-do"),
-      orderBy("dueDate", "asc")
+      orderBy("dueDate", "asc"),
+      limit(8)
     );
+
     if (category) {
       q = query(q, where("category", "==", category));
     }
@@ -61,7 +68,10 @@ const TodoTable = ({
       const filteredTasks = todosData.filter((task) =>
         task.title.toLowerCase().includes(search.toLowerCase())
       );
+
       setTodos(filteredTasks);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      setHasMore(querySnapshot.docs.length === 8);
       setLoading(false);
     });
 
@@ -69,6 +79,7 @@ const TodoTable = ({
   }, [user.uid, category, search, dueDate]);
 
   const handleShowMore = async () => {
+    if (!lastVisible) return;
     setLoading(true);
 
     const collectionRef = collection(db, "tasks");
@@ -76,7 +87,9 @@ const TodoTable = ({
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "to-do"),
-      orderBy("createdAt", "asc")
+      orderBy("dueDate", "asc"),
+      startAfter(lastVisible),
+      limit(8)
     );
 
     if (category) {
@@ -84,8 +97,8 @@ const TodoTable = ({
     }
 
     if (dueDate) {
-      const formattedDueDate = new Date(dueDate);
-      q = query(q, where("createdAt", "<", formattedDueDate));
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
     const querySnapshot = await getDocs(q);
@@ -96,16 +109,10 @@ const TodoTable = ({
     const filteredTasks = todosData.filter((task) =>
       task.title.toLowerCase().includes(search.toLowerCase())
     );
-    setTodos(filteredTasks);
 
-    if (todosData.length > 8) {
-      setTodos(todosData.slice(0, 8));
-      setHasMore(true);
-    } else {
-      setTodos(todosData);
-      setHasMore(false);
-    }
-
+    setTodos((prevTodos) => [...prevTodos, ...filteredTasks]);
+    setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+    setHasMore(querySnapshot.docs.length === 8);
     setLoading(false);
   };
 

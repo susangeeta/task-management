@@ -91,7 +91,7 @@ const BoardTask: React.FC<BoardTaskProps> = ({
             <p className=" text-gray-500 ">No tasks in {type}</p>
           </div>
         )}
-        {loading && <p className="p-4">Loading tasks...</p>}
+
         {tasks?.map((item: Task) => (
           <div
             key={item.id}

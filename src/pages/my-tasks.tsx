@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { vectorIcon, whiteCrossIcon } from "../assets/svg";
 import {
@@ -17,6 +19,19 @@ const MyTasksPage = () => {
   const [taskIds, setTaskIds] = useState<string[]>([]);
   const { findByIdAndDelete, findByIdAndUpdate } = useDb();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const navigate = useNavigate();
+  const auth = getAuth();
+  console.log(auth, "user");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        navigate("/");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigate]);
 
   const handleDeleteMultipleTasks = async () => {
     if (taskIds.length === 0) return;

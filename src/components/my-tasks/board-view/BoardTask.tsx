@@ -134,7 +134,11 @@ const BoardTask = () => {
 
   return (
     <div>
-      {todos.length || progress.length || complete.length ? (
+      {loading ? (
+        <>
+          <p className="p-4 text-2xl font-semibold">Loading tasks...</p>
+        </>
+      ) : todos.length || progress.length || complete.length ? (
         <div className="grid grid-cols-4 gap-6  ">
           <BoardCard
             bgColor="bg-background-todo-color"

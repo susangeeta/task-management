@@ -1,9 +1,11 @@
 import {
   collection,
   getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -11,7 +13,14 @@ import { useTaskFilter } from "../../../contexts/TaskFilter";
 import { db } from "../../../db/db.config";
 import useAuth from "../../../hooks/useAuth";
 import TaskTable from "./TaskTable";
-import { Task } from "./TodoTable";
+
+export interface Task {
+  id: string;
+  title: string;
+  dueDate: string;
+  status: string;
+  category: string;
+}
 
 const Completed = ({
   setTaskIds,
@@ -20,23 +29,28 @@ const Completed = ({
   taskIds: string[];
   setTaskIds: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
-  const { category, search, dueDate } = useTaskFilter();
   const [openCompletePanel, setOpenCompletePanel] = useState(true);
   const [todos, setTodos] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [lastVisible, setLastVisible] = useState<any>(null); // Track the last document
+  const [hasMore, setHasMore] = useState(false); // Check if more tasks are available
   const { user } = useAuth();
-  const [hasMore, setHasMore] = useState(false);
+  const { category, search, dueDate } = useTaskFilter();
 
   useEffect(() => {
     if (!user.uid) return;
+
+    setLoading(true);
 
     const collectionRef = collection(db, "tasks");
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
       where("status", "==", "completed"),
-      orderBy("dueDate", "asc")
+      orderBy("dueDate", "asc"),
+      limit(8)
     );
+
     if (category) {
       q = query(q, where("category", "==", category));
     }
@@ -54,7 +68,10 @@ const Completed = ({
       const filteredTasks = todosData.filter((task) =>
         task.title.toLowerCase().includes(search.toLowerCase())
       );
+
       setTodos(filteredTasks);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      setHasMore(querySnapshot.docs.length === 8);
       setLoading(false);
     });
 
@@ -62,14 +79,17 @@ const Completed = ({
   }, [user.uid, category, search, dueDate]);
 
   const handleShowMore = async () => {
+    if (!lastVisible) return;
     setLoading(true);
 
     const collectionRef = collection(db, "tasks");
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "completed"),
-      orderBy("dueDate", "asc")
+      where("status", "==", "to-do"),
+      orderBy("dueDate", "asc"),
+      startAfter(lastVisible),
+      limit(8)
     );
 
     if (category) {
@@ -81,14 +101,6 @@ const Completed = ({
       q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
-    // if (search) {
-    //   q = query(
-    //     q,
-    //     where("title", ">=", search),
-    //     where("title", "<=", search + "\uf8ff")
-    //   );
-    // }
-
     const querySnapshot = await getDocs(q);
     const todosData: Task[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -97,10 +109,11 @@ const Completed = ({
     const filteredTasks = todosData.filter((task) =>
       task.title.toLowerCase().includes(search.toLowerCase())
     );
-    setTodos(filteredTasks);
-    setLoading(false);
 
-    setHasMore(false);
+    setTodos((prevTodos) => [...prevTodos, ...filteredTasks]);
+    setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+    setHasMore(querySnapshot.docs.length === 8);
+    setLoading(false);
   };
 
   return (
