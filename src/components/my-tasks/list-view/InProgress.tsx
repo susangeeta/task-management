@@ -1,7 +1,9 @@
 import {
   collection,
+  getDocs,
   limit,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -23,12 +25,8 @@ const InProgress = ({
   const [todos, setTodos] = useState<Task[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
-  const { category, search } = useTaskFilter();
-  const [loadMore, setLoadMore] = useState(true);
-
-  const handleLoadMore = () => {
-    setLoadMore(!loadMore);
-  };
+  const { category, search, dueDate } = useTaskFilter();
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     if (!user.uid) return;
@@ -37,16 +35,19 @@ const InProgress = ({
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "inprogress")
+      where("status", "==", "inprogress"),
+      orderBy("dueDate", "asc")
     );
 
     if (category) {
       q = query(q, where("category", "==", category));
     }
 
-    if (loadMore) {
-      q = query(q, limit(1));
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
     }
+    q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
@@ -62,7 +63,38 @@ const InProgress = ({
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search, loadMore]);
+  }, [user.uid, category, search, dueDate]);
+
+  const handleShowMore = async () => {
+    setLoading(true);
+
+    const collectionRef = collection(db, "tasks");
+    let q = query(
+      collectionRef,
+      where("userUid", "==", user.uid),
+      where("status", "==", "inprogress"),
+      orderBy("dueDate", "asc")
+    );
+
+    if (category) {
+      q = query(q, where("category", "==", category));
+    }
+
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
+
+    const querySnapshot = await getDocs(q);
+    const todosData: Task[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Task, "id">),
+    }));
+
+    setTodos(todosData);
+    setHasMore(false);
+    setLoading(false);
+  };
 
   return (
     <TaskTable
@@ -76,8 +108,8 @@ const InProgress = ({
       heading="In-Progress"
       onClose={() => setOpenInProgressPanel(!openInProgressPanel)}
       bgColor="bg-background-inprogress-bg"
-      handleLoadMore={handleLoadMore}
-      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      handleLoadMore={handleShowMore}
+      loadMoreText={hasMore ? "Load More" : ""}
       type={"InProgress"}
     />
   );

@@ -1,4 +1,10 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { BoardCard } from "../..";
 import { SearchNotFound } from "../../../assets/svg";
@@ -20,7 +26,7 @@ const BoardTask = () => {
   const [complete, setComplete] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
-  const { category, search } = useTaskFilter();
+  const { category, search, dueDate } = useTaskFilter();
 
   //tododata
   useEffect(() => {
@@ -30,10 +36,16 @@ const BoardTask = () => {
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "to-do")
+      where("status", "==", "to-do"),
+      orderBy("dueDate", "asc")
     );
     if (category) {
       q = query(q, where("category", "==", category));
+    }
+
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -49,7 +61,7 @@ const BoardTask = () => {
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search]);
+  }, [user.uid, category, search, dueDate]);
 
   //inprogress
   useEffect(() => {
@@ -59,10 +71,16 @@ const BoardTask = () => {
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "inprogress")
+      where("status", "==", "inprogress"),
+      orderBy("dueDate", "asc")
     );
     if (category) {
       q = query(q, where("category", "==", category));
+    }
+
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
     }
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -70,12 +88,15 @@ const BoardTask = () => {
         id: doc.id,
         ...(doc.data() as Omit<Task, "id">),
       }));
-      setProgress(progressData);
+      const filteredTasks = progressData.filter((task) =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+      );
+      setProgress(filteredTasks);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user.uid, category]);
+  }, [user.uid, category, search, dueDate]);
 
   //complete
   useEffect(() => {
@@ -85,23 +106,31 @@ const BoardTask = () => {
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "completed")
+      where("status", "==", "completed"),
+      orderBy("dueDate", "asc")
     );
     if (category) {
       q = query(q, where("category", "==", category));
     }
 
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const completeData: Task[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Task, "id">),
       }));
-      setComplete(completeData);
+      const filteredTasks = completeData.filter((task) =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+      );
+      setComplete(filteredTasks);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user.uid, category]);
+  }, [user.uid, category, search, dueDate]);
 
   return (
     <div>

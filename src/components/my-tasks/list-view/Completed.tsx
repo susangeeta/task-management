@@ -1,4 +1,12 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTaskFilter } from "../../../contexts/TaskFilter";
 import { db } from "../../../db/db.config";
@@ -13,16 +21,12 @@ const Completed = ({
   taskIds: string[];
   setTaskIds: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
+  const { category, search, dueDate } = useTaskFilter();
   const [openCompletePanel, setOpenCompletePanel] = useState(true);
   const [todos, setTodos] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
-  const { category, search } = useTaskFilter();
-  const [loadMore, setLoadMore] = useState(true);
-
-  const handleLoadMore = () => {
-    setLoadMore(!loadMore);
-  };
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     if (!user.uid) return;
@@ -31,12 +35,19 @@ const Completed = ({
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "completed")
+      where("status", "==", "completed"),
+      orderBy("dueDate", "asc")
     );
 
     if (category) {
       q = query(q, where("category", "==", category));
     }
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
+
+    q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
@@ -51,7 +62,38 @@ const Completed = ({
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search]);
+  }, [user.uid, category, search, dueDate]);
+
+  const handleShowMore = async () => {
+    setLoading(true);
+
+    const collectionRef = collection(db, "tasks");
+    let q = query(
+      collectionRef,
+      where("userUid", "==", user.uid),
+      where("status", "==", "completed"),
+      orderBy("dueDate", "asc")
+    );
+
+    if (category) {
+      q = query(q, where("category", "==", category));
+    }
+
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
+
+    const querySnapshot = await getDocs(q);
+    const todosData: Task[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Task, "id">),
+    }));
+
+    setTodos(todosData);
+    setHasMore(false);
+    setLoading(false);
+  };
 
   return (
     <TaskTable
@@ -65,8 +107,8 @@ const Completed = ({
       heading="Completed"
       onClose={() => setOpenCompletePanel(!openCompletePanel)}
       bgColor="bg-background-completed-bg"
-      handleLoadMore={handleLoadMore}
-      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      handleLoadMore={handleShowMore}
+      loadMoreText={hasMore ? "Load More" : ""}
       type={"Completed"}
     />
   );

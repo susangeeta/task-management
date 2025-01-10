@@ -1,7 +1,9 @@
 import {
   collection,
+  getDocs,
   limit,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -30,12 +32,8 @@ const TodoTable = ({
   const [todos, setTodos] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
-  const { category, search } = useTaskFilter();
-  const [loadMore, setLoadMore] = useState(true);
-
-  const handleLoadMore = () => {
-    setLoadMore(!loadMore);
-  };
+  const { category, search, dueDate } = useTaskFilter();
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     if (!user.uid) return;
@@ -44,16 +42,20 @@ const TodoTable = ({
     let q = query(
       collectionRef,
       where("userUid", "==", user.uid),
-      where("status", "==", "to-do")
+      where("status", "==", "to-do"),
+      orderBy("dueDate", "asc")
     );
 
     if (category) {
       q = query(q, where("category", "==", category));
     }
 
-    if (loadMore) {
-      q = query(q, limit(8));
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
     }
+
+    q = query(q, limit(9));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const todosData: Task[] = querySnapshot.docs.map((doc) => ({
@@ -61,16 +63,51 @@ const TodoTable = ({
         ...(doc.data() as Omit<Task, "id">),
       }));
 
-      const filteredTasks = todosData.filter((task) =>
-        task.title.toLowerCase().includes(search.toLowerCase())
-      );
+      if (todosData.length > 8) {
+        setTodos(todosData.slice(0, 8));
+        setHasMore(true);
+      } else {
+        setTodos(todosData);
+        setHasMore(false);
+      }
 
-      setTodos(filteredTasks);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user.uid, category, search, loadMore]);
+  }, [user.uid, category, search, dueDate]);
+
+  const handleShowMore = async () => {
+    setLoading(true);
+
+    const collectionRef = collection(db, "tasks");
+    let q = query(
+      collectionRef,
+      where("userUid", "==", user.uid),
+      where("status", "==", "to-do"),
+      orderBy("dueDate", "asc")
+    );
+
+    if (category) {
+      q = query(q, where("category", "==", category));
+    }
+
+    if (dueDate) {
+      const formattedDueDate = new Date(dueDate).toISOString();
+      q = query(q, where("dueDate", "<=", formattedDueDate));
+    }
+
+    const querySnapshot = await getDocs(q);
+    const todosData: Task[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Task, "id">),
+    }));
+
+    setTodos(todosData);
+    setHasMore(false);
+    setLoading(false);
+  };
+  console.log(todos);
 
   return (
     <TaskTable
@@ -84,8 +121,8 @@ const TodoTable = ({
       heading="Todo"
       onClose={() => setOpenTodoPanel(!openTodoPanel)}
       bgColor="bg-background-todo-color"
-      handleLoadMore={handleLoadMore}
-      loadMoreText={loadMore ? "Load More" : "Show Less"}
+      handleLoadMore={handleShowMore}
+      loadMoreText={hasMore ? "Load More" : ""}
       type={"To-Do"}
     />
   );

@@ -1,21 +1,41 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { crossIcon, down, searchIcon } from "../../assets/svg";
+import Popup from "../../common/Popup";
 import { CreateTaskModal } from "../../components";
 import { useTaskFilter } from "../../contexts/TaskFilter";
 
 const TaskFilter = () => {
+  const { category, setCategory, search, setSearch, setDueDate, dueDate } =
+    useTaskFilter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const { category, setCategory, search, setSearch } = useTaskFilter();
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const datePickerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
   const handleCategorySelect = (category: "work" | "personal") => {
     setCategory(category);
     setIsCategoryOpen(false);
   };
 
-  console.log(search);
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const today = new Date();
+
+    if (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    ) {
+      return "Today";
+    }
+
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" });
+    const year = date.getFullYear();
+    return `${day}   ${month},${year}`;
+  };
 
   return (
     <div className="flex justify-between w-full">
@@ -54,14 +74,40 @@ const TaskFilter = () => {
         </div>
         <div className="relative">
           <button
-            onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+            onClick={(e) => {
+              setAnchorEl(e.currentTarget);
+              setShowDatePicker(!showDatePicker);
+            }}
+            ref={datePickerRef}
             className="border border-text-secondary/20 h-[35px] w-[100px] items-center justify-center gap-1.5 rounded-xxl flex"
           >
             <span className="text-xxxl font-semibold custom-font text-text-secondary/60">
-              Due Date
+              {dueDate ? formatDate(dueDate) : "Due Date"}
             </span>
             <img src={down} alt="dropdown-icon" />
           </button>
+          <div
+            ref={datePickerRef}
+            className="absolute  top-12 left-0  border border-text-dark/20 rounded-xl bg-white shadow-lg"
+          >
+            <Popup
+              isOpen={showDatePicker}
+              onClose={() => setShowDatePicker(false)}
+              anchorEl={anchorEl}
+              className="rounded-xl h-[300px] w-[350px] flex flex-col gap-2 bg-white shadow-lg"
+            >
+              <div className="p-2">
+                <Calendar
+                  onChange={(date) => {
+                    setDueDate(new Date(String(date)).toISOString());
+                    setShowDatePicker(false);
+                  }}
+                  value={dueDate}
+                  className="react-calendar"
+                />
+              </div>
+            </Popup>
+          </div>
         </div>
       </div>
       <div className="flex gap-3 items-center justify-end">

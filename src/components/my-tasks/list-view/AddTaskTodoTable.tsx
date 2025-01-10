@@ -1,6 +1,7 @@
 import { createRef, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Swal from "sweetalert2";
 import {
   addIcon,
   calenderIcon,
@@ -24,6 +25,7 @@ const AddTaskTodoTable = () => {
   const [selectedDate, setSelectedDate] = useState<any | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const statusRef = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
   const datePickerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
   const categoryRef = useRef<Record<string, React.RefObject<HTMLDivElement>>>(
@@ -58,6 +60,8 @@ const AddTaskTodoTable = () => {
     title && selectedCategory && selectedDate && selectedStatus;
 
   const handleAddTask = async () => {
+    setLoading(true);
+
     try {
       const response = await create("tasks", {
         status: selectedStatus,
@@ -66,10 +70,27 @@ const AddTaskTodoTable = () => {
         dueDate: new Date(String(selectedDate)).toISOString(),
         userUid: user.uid,
       });
-      console.log(response, selectedDate, "response");
+      console.log(response);
+
+      Swal.fire({
+        icon: "success",
+        title: "Task Added",
+        text: "Your task has been successfully added!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      });
       handleClear();
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "There was an error adding your task. Please try again.",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -174,26 +195,26 @@ const AddTaskTodoTable = () => {
                 isOpen={openStatus === "status"}
                 onClose={() => setOpenStatus(null)}
                 anchorEl={getStatusRef("status").current}
-                className="rounded-xl  h-[100px] w-[8rem] flex flex-col gap-2 bg-background-lightPink border-2 border-border-light/15 shadow-lg"
+                className="rounded-xl  h-[100px] w-[8rem] flex flex-col items-start gap-2 bg-background-lightPink border-2 border-border-light/15 shadow-lg"
               >
                 <div
-                  className={`text-[12px] flex flex-col  gap-2 p-3 items-start  text-[#000000]`}
+                  className={`text-[12px] flex flex-col font-semibold  gap-2 p-3   text-black`}
                 >
                   <button
                     onClick={() => handleStatusClick("to-do")}
-                    className="custom-font w-full"
+                    className="custom-font w-full text-start uppercase"
                   >
                     To-Do
                   </button>
                   <button
-                    onClick={() => handleStatusClick(" inprogress")}
-                    className="custom-font w-full"
+                    onClick={() => handleStatusClick("inprogress")}
+                    className="custom-font w-full  text-start uppercase"
                   >
                     In Progress
                   </button>
                   <button
                     onClick={() => handleStatusClick("completed")}
-                    className="custom-font w-full"
+                    className="custom-font w-full text-start uppercase"
                   >
                     Completed
                   </button>
@@ -234,17 +255,17 @@ const AddTaskTodoTable = () => {
                 className="rounded-xl  h-[80px] w-[6rem] flex flex-col gap-2 bg-background-lightPink border-2 border-border-light/15 shadow-lg"
               >
                 <div
-                  className={`text-[12px] flex flex-col  gap-2 p-3 items-start  text-[#000000]`}
+                  className={`text-[12px] flex flex-col  gap-2 p-3   text-black font-semibold`}
                 >
                   <button
                     onClick={() => handleCategoryClick("work")}
-                    className="custom-font w-full"
+                    className="custom-font w-full text-start uppercase"
                   >
                     Work
                   </button>
                   <button
                     onClick={() => handleCategoryClick("personal")}
-                    className="custom-font w-full"
+                    className="custom-font w-full text-start uppercase"
                   >
                     Personal
                   </button>
@@ -255,14 +276,21 @@ const AddTaskTodoTable = () => {
 
           <div className="flex gap-4 items-center px-12">
             <button
-              disabled={!isAddButtonActive}
+              disabled={!isAddButtonActive || loading}
               onClick={handleAddTask}
-              className="bg-[#7B1984] h-[30px] rounded-xxl w-[84px] gap-1 flex items-center justify-center"
             >
-              <span className="text-white text-xs custom-font font-bold">
-                ADD
-              </span>
-              <img src={exportIcon} className="h-5 w-5" />
+              {loading ? (
+                <button className="text-white text-xs custom-font font-bold px-3 py-2 w-fit bg-[#7B1984] rounded-xxl">
+                  Loading...
+                </button>
+              ) : (
+                <button className=" h-[30px] rounded-xxl w-[84px] gap-1 flex items-center justify-center bg-[#7B1984]">
+                  <span className="text-white text-xs custom-font font-bold">
+                    ADD
+                  </span>
+                  <img src={exportIcon} className="h-5 w-5" />
+                </button>
+              )}
             </button>
             <h1
               onClick={handleClear}
