@@ -21,7 +21,6 @@ const MyTasksPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
-  console.log(auth, "user");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
